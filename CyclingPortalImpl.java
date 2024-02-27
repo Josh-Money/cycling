@@ -117,6 +117,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Creates new stage using constructor
 		CyclingStage newStage = new CyclingStage(getNextStageId(), stageName, description, length, startTime, type);
+
+		// Adds stage to race
+		race.addStage(newStage);
 	}
 
 	public int getNextStageId() {
@@ -156,8 +159,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+		
 	}
 
 	@Override
