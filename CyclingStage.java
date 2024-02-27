@@ -10,9 +10,11 @@ public class CyclingStage {
     private double length;
     private LocalDateTime startTime;
     private StageType type;
+    private List<Checkpoint> checkpoints;
+    private StageState stageState;
 
-    public CyclingStage(int stageId, String stageName, String description, 
-    double length, LocalDateTime startTime, StageType type) {
+    public CyclingStage(int stageId, String stageName, String description, double length, 
+    LocalDateTime startTime, StageType type, List<Checkpoint> checkpoints, StageState stageState) {
         
         this.stageId = stageId;
         this.stageName = stageName;
@@ -20,6 +22,8 @@ public class CyclingStage {
         this.length = length;
         this.startTime = startTime;
         this.type = type;
+        this.checkpoints = new ArrayList<>();
+        this.stageState = stageState;
     }
 
     public int getStageId() {
@@ -46,6 +50,27 @@ public class CyclingStage {
         return type;
     }
 
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
+    }
+
+    public StageState getStageState() {
+        return stageState;
+    }
+
+    public int addCheckpoint(Checkpoint checkpoint) {
+        int checkpointId = generateUniqueCheckpointId();
+
+        checkpoints.add(checkpoint);
+
+        return checkpointId;
+    }
+
+    public int generateUniqueCheckpointId() {
+        // Creates unique checkpoint ID
+        return checkpoints.size() + 1;
+    }
+
     @Override
     public String toString() {
         return "CyclingStage{" +
@@ -55,6 +80,7 @@ public class CyclingStage {
                 ", length=" + length +
                 ", startTime=" + startTime +
                 ", type=" + type +
+                ", checkpoint=" +
                 '}';
     }
 }

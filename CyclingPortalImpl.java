@@ -159,7 +159,40 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
 			Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException,
 			InvalidStageTypeException {
-		
+	
+		// Finds the stage using stage Id
+		CyclingStage stage = stages.get(stageId);
+
+		// Verifies stage ID
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
+		}
+
+		// Finds length of stage 
+		length = stages.get(stageId).getLength();
+
+		// Verfies location is valid
+		if (location > length) {
+			throw new InvalidLocationException("Location is longer than length of stage");
+		}
+
+		// Verifies stage is in the right state
+		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
+
+		}
+
+		// Verifies that the stage is not a time-trial
+		if (stage.getType() == StageType.TT) {
+			throw new InvalidStageTypeException("Time-trials stages have no checkpoints.");
+		}
+
+		// Creates a new CategorisedClimbCheckpoint
+		CatergorizedClimbCheckpoint newClimb = new CatergorizedClimbCheckpoint(location, type, averageGradient, length);
+
+		// Adds the checkpoint to the stage and gives it a unique ID
+		int checkpointId = stages.get(stageId).addCheckpoint(newClimb);
+
+		return checkpointId;
 	}
 
 	@Override
