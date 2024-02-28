@@ -30,12 +30,15 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		// Constructor to create new race
 		CyclingRace newRace = new CyclingRace(name, description);
+
+		// Generates unique race id 
+		int raceId = getNextRaceID();
 		
 		// Adds new race to the list 
-		races.add(getNextRaceID(), newRace);
+		races.put(raceId, newRace);
 		
-		// Gives the new race a unique raceId
-		return newRace.getRaceId();
+		// Return the raceId
+		return raceId;
 	}
 
 	private int getNextRaceID() {
@@ -118,8 +121,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Creates new stage using constructor
 		CyclingStage newStage = new CyclingStage(stageName, description, length, startTime, type);
 
+		// Generates stage id
+		int stageId = getNextStageId();
+
 		// Adds stage to race
-		race.addStage(getNextStageId(), newStage);
+		race.addStage(stageId, newStage);
 	}
 
 	public int getNextStageId() {
@@ -301,8 +307,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		if (name == null || name.trim().isEmpty() || name.length() > 30 || name.contains(" ")){
 			throw new InvalidNameException("Invalid team name: " + name);
 		}
+
+		// Generates new team ID
+		int teamId = getUniqueTeamId();
+
 		// Adds to the teams hashmap
-		teams.add(getUniqueTeamId(), newTeam);
+		teams.put(teamId, newTeam);
 	}
 
 	public int getUniqueTeamId() {
@@ -327,38 +337,125 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public int[] getTeams() {
+		
+		// Creates a new list to display all teamIDs
 		List<Integer> teamIds = new ArrayList<>();
 
+		// Loops through the teams hashmap adding the teamId to the list
 		for (CyclingTeam team : teams.values()) {
 			teamIds.add(team.getTeamId());
 		}
 
+		// Returns the list of teamIds
 		return teamIds.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
 		
+		// Finds team associated with teamId
+		CyclingTeam team = teams.get(teamId);
+
+		// Verifies Id exists
+		if(!teams.containsKey(teamId)) {
+			throw new IDNotRecognisedException("teamId is not recognised: " + teamId);
+		}
+
+		// Returns riders in team
+		return team.getRidersInTeam();
 	}
 
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		// Creates new rider
+		CyclingRider newRider = new CyclingRider(yearOfBirth, teamID, name, yearOfBirth);
+
+		// Verfies teamId
+		if(!teams.containsKey(teamID)) {
+			throw new IDNotRecognisedException("TeamId not recognised: " + teamID);
+		}
+
+		// Validate rider name and year of birth
+		if (name == null || name.trim().isEmpty() || yearOfBirth < 1900) {
+			throw new IllegalArgumentException("Invalid rider name or year of birth");
+		}
+
+		// Generates unique rider Id
+		int riderId = getNextRiderId();
+
+		// Adds rider Id and details to riders hash map
+		riders.put(riderId, newRider);
+
+		return riderId;
+	}
+
+	public int getNextRiderId() {
+		// Generates unique rider Id
+		return riders.size() + 1;
 	}
 
 	@Override
 	public void removeRider(int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
+		
+		// Finds rider using rider Id
+		CyclingRider rider = riders.get(riderId);
 
+		// Verfies rider Id 
+		if (!riders.containsKey(riderId)) {
+			throw new IDNotRecognisedException("rider Id not recognised: " + riderId);		
+		}
+
+		// Removes the rider
+		riders.remove(riderId);
 	}
 
 	@Override
 	public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpoints)
 			throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException,
 			InvalidStageStateException {
-		// TODO Auto-generated method stub
+		
+		// Checks if stage Id exists 
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
+		}
+
+		// Checks if rider id exists
+		if (!riders.containsKey(riderId)) {
+			throw new IDNotRecognisedException("RiderId not recognised: " + riderId);
+		}
+
+		// Get stage and rider 
+		CyclingStage stage = stages.get(stageId);
+		CyclingRider rider = riders.get(riderId);
+
+		// Check if stage state is in the "waiting for results" state
+		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("Stage is not in 'waiting for results' state.");
+		}
+
+		// Check if the rider already has results for the stage 
+		if (stage.hasRiderResult(riderId)) {
+			throw new DuplicatedResultException("Rider already ahs a result.");
+		}
+
+		// Check if number of checkpoint time is valid
+		int expectedCheckpointCount = stage.getNumberOfCheckpoints() + 2; // for start and finish
+		if (checkpoints.length != expectedCheckpointCount) {
+			throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
+		}
+		
+		// Create a new CyclingResults object
+		CyclingResult results = new CyclingResult(riderId, stageId, checkpoints);
+		
+		// Add results to stage and rider 
+		// NEED TO MAKE addResults FUNCTION
+		stage.addResults(results);
+		rider.addResults(results);
+		
+		// Update the stage state to "results recorded"
+		stage.setStageState(StageState.RESULTS_FINALISED);
 
 	}
 

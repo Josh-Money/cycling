@@ -1,6 +1,7 @@
 package cycling;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class CyclingStage {
     
@@ -12,6 +13,7 @@ public class CyclingStage {
     private StageType type;
     private Map<Integer, Checkpoint> checkpoints;
     private StageState stageState;
+    private Map<Integer, CyclingResult> results;
 
     public CyclingStage(int stageId, String stageName, String description, double length, 
     LocalDateTime startTime, StageType type, Map<Integer, Checkpoint> checkpoints, StageState stageState) {
@@ -93,6 +95,21 @@ public class CyclingStage {
             return true;
         }
 
+        return false;
+    }
+
+    public int getNumberOfCheckpoints() {
+        //Returns the number of checkpoints
+        return getCheckpoints().size();
+    }
+
+    public boolean hasRiderResult(int riderId) {
+
+        for (CyclingResult result : results) {
+            if (result.getRiderId() == riderId) {
+                return true;
+            }
+        }
         return false;
     }
 

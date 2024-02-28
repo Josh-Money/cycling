@@ -5,9 +5,9 @@ import java.util.Arrays;
 
 public class CyclingResult {
     
-    private final int riderId;
-    private final int stageId;
-    private final LocalTime[] checkpointTimes;
+    private int riderId;
+    private int stageId;
+    private LocalTime[] checkpointTimes;
 
     public CyclingResult(int riderId, int stageId, LocalTime[] checkpointTimes) {
         this.riderId = riderId;
