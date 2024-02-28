@@ -7,8 +7,8 @@ import java.util.*;
 
 public class CyclingPortalImpl implements CyclingPortal {
 
-	private List<CyclingRace> races;
-	private List<CyclingStage> stages;
+	private Map<Integer, CyclingRace> races;
+	private Map<Integer, CyclingStage> stages;
 	private Map<Integer, CyclingTeam> teams;
 	private Map<Integer, CyclingRider> riders;
 
@@ -29,10 +29,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
 		
 		// Constructor to create new race
-		CyclingRace newRace = new CyclingRace(getNextRaceID(), name, description);
+		CyclingRace newRace = new CyclingRace(name, description);
 		
 		// Adds new race to the list 
-		races.add(newRace);
+		races.add(getNextRaceID(), newRace);
 		
 		// Gives the new race a unique raceId
 		return newRace.getRaceId();
@@ -72,7 +72,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 		
 		// Removes the race
-		races.remove(raceId);
+		races.remove(race);
 	}
 
 	@Override
@@ -116,10 +116,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Creates new stage using constructor
-		CyclingStage newStage = new CyclingStage(getNextStageId(), stageName, description, length, startTime, type);
+		CyclingStage newStage = new CyclingStage(stageName, description, length, startTime, type);
 
 		// Adds stage to race
-		race.addStage(newStage);
+		race.addStage(getNextStageId(), newStage);
 	}
 
 	public int getNextStageId() {
@@ -151,7 +151,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 		
 		// Removes the stage
-		stages.remove(stageId);
+		stages.remove(stage);
 
 	}
 
@@ -241,7 +241,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Verifies stage is in right state
-
+		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("The stage is not in 'waiting for results' state.");
+		}
 
 		// Removes the checkpoint
 		removeCheckpointFromList(checkpointId);
@@ -262,7 +264,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidStageStateException("The stage is not in 'waiting for results' state.");
 		}
 
-		// SEt stage state to 'Waiting for results'
+		// Set stage state to 'Waiting for results'
 		stage.setStageState(StageState.WAITING_FOR_RESULTS);
 	}
 
@@ -276,6 +278,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Verfies stage is in right state
+		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("The stage is not in 'Waiting for results' state.");
+		}
 
 		// Retrieves the list of checkpoints which are in order from first to last
 		stage.getCheckpoints();
@@ -283,26 +288,57 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		// Creates a new team 
+		CyclingTeam newTeam = new CyclingTeam(name, description);
+
+		// Verifies if team name is already in use
+		if (teams.contains(name)) {
+			throw new IllegalNameException("Name is already in use.");
+		}
+
+		// Verifies that name is valid
+		if (name == null || name.trim().isEmpty() || name.length() > 30 || name.contains(" ")){
+			throw new InvalidNameException("Invalid team name: " + name);
+		}
+		// Adds to the teams hashmap
+		teams.add(getUniqueTeamId(), newTeam);
+	}
+
+	public int getUniqueTeamId() {
+		return teams.size() + 1;
 	}
 
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
+		
+		// Creates a new team
+		CyclingTeam team = teams.get(teamId);
+
+		// Verifies TeamId 
+		if (!teams.containsKey(teamId)) {
+			throw new IDNotRecognisedException("TeamId not recognised: " + teamId);
+		}
+
+		// Removes the team
+		teams.remove(team);
 
 	}
 
 	@Override
 	public int[] getTeams() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Integer> teamIds = new ArrayList<>();
+
+		for (CyclingTeam team : teams.values()) {
+			teamIds.add(team.getTeamId());
+		}
+
+		return teamIds.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	@Override
 	public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override

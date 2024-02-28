@@ -10,11 +10,11 @@ public class CyclingStage {
     private double length;
     private LocalDateTime startTime;
     private StageType type;
-    private List<Checkpoint> checkpoints;
+    private Map<Integer, Checkpoint> checkpoints;
     private StageState stageState;
 
     public CyclingStage(int stageId, String stageName, String description, double length, 
-    LocalDateTime startTime, StageType type, List<Checkpoint> checkpoints, StageState stageState) {
+    LocalDateTime startTime, StageType type, Map<Integer, Checkpoint> checkpoints, StageState stageState) {
         
         this.stageId = stageId;
         this.stageName = stageName;
@@ -50,7 +50,7 @@ public class CyclingStage {
         return type;
     }
 
-    public List<Checkpoint> getCheckpoints() {
+    public Map<Integer, Checkpoint> getCheckpoints() {
         return checkpoints;
     }
 
@@ -105,7 +105,7 @@ public class CyclingStage {
                 ", length=" + length +
                 ", startTime=" + startTime +
                 ", type=" + type +
-                ", checkpoint=" +
+                ", checkpoint=" + checkpoints +
                 '}';
     }
 }

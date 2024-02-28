@@ -3,13 +3,13 @@ package cycling;
 public class CyclingRider {
     
     private int riderId;
-    private int teamID;
+    private int teamId;
     private String name;
     private int yearOfBirth;
 
-    public CyclingRider(int riderId, int teamID, String name, int yearOfBirth) {
+    public CyclingRider(int riderId, int teamId, String name, int yearOfBirth) {
         this.riderId = riderId;
-        this.teamID = teamID;
+        this.teamId = teamId;
         this.name = name;
         this.yearOfBirth = yearOfBirth;
     }
@@ -18,8 +18,8 @@ public class CyclingRider {
         return riderId;
     }
 
-    public int getTeamID() {
-        return teamID;
+    public int getTeamId() {
+        return teamId;
     }
 
     public String getName() {
@@ -34,7 +34,7 @@ public class CyclingRider {
     public String toString() {
         return "CyclingRider{" +
                 "riderId=" + riderId +
-                ", teamID=" + teamID +
+                ", teamId=" + teamId +
                 ", name=" + name +
                 ", yearOfBirth=" + yearOfBirth +
                 '}';
