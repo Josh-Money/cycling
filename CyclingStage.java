@@ -58,10 +58,22 @@ public class CyclingStage {
         return stageState;
     }
 
-    public int addCheckpoint(Checkpoint checkpoint) {
-        int checkpointId = generateUniqueCheckpointId();
+    public void setStageState(StageState stageState) {
+        this.stageState = stageState;
+    }
 
-        checkpoints.add(checkpoint);
+    public int addCheckpoint(Checkpoint checkpoint) {
+        
+        double checkpointLocation = checkpoint.getLocation();
+
+        int index = 0;
+        while (index < checkpoints.size() && checkpoints.get(index).getLocation() < checkpointLocation) {
+            index++;
+        }
+        
+        checkpoints.add(index, checkpoint);
+
+        int checkpointId = generateUniqueCheckpointId();
 
         return checkpointId;
     }
@@ -69,6 +81,19 @@ public class CyclingStage {
     public int generateUniqueCheckpointId() {
         // Creates unique checkpoint ID
         return checkpoints.size() + 1;
+    }
+
+    public void removeCheckpointFromList(Checkpoint checkpoint) {
+        // Removes checkpoint from the list chekpoints
+        checkpoints.remove(checkpoint);
+    }
+
+    public boolean isValidCheckpointId(int checkpointId) {
+        if (checkpoints.containsKey(checkpointId)) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

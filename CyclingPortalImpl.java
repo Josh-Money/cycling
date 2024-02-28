@@ -178,7 +178,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Verifies stage is in the right state
 		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
-
+			throw new InvalidStageStateException("");
 		}
 
 		// Verifies that the stage is not a time-trial
@@ -190,7 +190,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		CatergorizedClimbCheckpoint newClimb = new CatergorizedClimbCheckpoint(location, type, averageGradient, length);
 
 		// Adds the checkpoint to the stage and gives it a unique ID
-		int checkpointId = stages.get(stageId).addCheckpoint(newClimb);
+		int checkpointId = stage.addCheckpoint(newClimb);
 
 		return checkpointId;
 	}
@@ -198,26 +198,87 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException,
 			InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		// Creates variable for the stage with the given stageId
+		CyclingStage stage = stages.get(stageId);
+
+		// Verifies stage ID
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
+		}
+
+		// Verfies location is valid
+		if (location > stages.get(stageId).getLength()) {
+			throw new InvalidLocationException("Location is longer than length of stage");
+		}
+
+		// Verifies stage is in the right state
+		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("");
+		}
+
+		// Verifies that the stage is not a time-trial
+		if (stage.getType() == StageType.TT) {
+			throw new InvalidStageTypeException("Time-trials stages have no checkpoints.");
+		}
+
+		// Creates a new IntermediateSprintCheckpoint
+		IntermediateSprintCheckpoint newSprint = new IntermediateSprintCheckpoint(location);
+
+		// Adds checkpoint to stage and gives it unique ID
+		int checkpointId = stage.addCheckpoint(newSprint);
+
+		return checkpointId;
+
 	}
 
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
-		// TODO Auto-generated method stub
+		
+		// Verify checkpoint Id
+		if (!isValidCheckpointId(checkpointId)) {
+			throw new IDNotRecognisedException("Invalid checkpoint ID: " + checkpointId);
+		}
 
+		// Verifies stage is in right state
+
+
+		// Removes the checkpoint
+		removeCheckpointFromList(checkpointId);
 	}
 
 	@Override
 	public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
-		// TODO Auto-generated method stub
 
+		CyclingStage stage = stages.get(stageId);
+
+		// Verify stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id is not recognised: " + stageId);
+		}
+
+		// Verifies stage state
+		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("The stage is not in 'waiting for results' state.");
+		}
+
+		// SEt stage state to 'Waiting for results'
+		stage.setStageState(StageState.WAITING_FOR_RESULTS);
 	}
 
 	@Override
 	public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		CyclingStage stage = stages.get(stageId);
+
+		// Verfies stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id is not recognised: " + stageId);
+		}
+
+		// Verfies stage is in right state
+
+		// Retrieves the list of checkpoints which are in order from first to last
+		stage.getCheckpoints();
 	}
 
 	@Override
