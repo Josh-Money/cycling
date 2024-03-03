@@ -124,10 +124,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		int stageId = getNextStageId();
 
 		// Adds stage to race
-		race.addStage(stageId, newStage); //two parameters used when there is only one parameter in the method cycling.CyclingRace.AddStage()
+		race.addStage(newStage); //two parameters used when there is only one parameter in the method cycling.CyclingRace.AddStage()
 	}
-
-	public int getNextStageId() {
+	
+    public int getNextStageId() {
 		
 		// Increments stageId to create a unique ID
 		return stages.size() + 1;
