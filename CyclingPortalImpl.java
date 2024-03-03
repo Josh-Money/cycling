@@ -72,10 +72,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Check if raceID is recognised
 		if (race == null) {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
-		}
-		
+		}		
 		// Removes the race
-		races.remove(race);
+		races.remove(race);      // think this might be race.getraceId() 
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		int stageId = getNextStageId();
 
 		// Adds stage to race
-		race.addStage(stageId, newStage);
+		race.addStage(stageId, newStage); //two parameters used when there is only one parameter in the method cycling.CyclingRace.AddStage()
 	}
 
 	public int getNextStageId() {
