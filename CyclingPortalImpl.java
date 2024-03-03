@@ -11,6 +11,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	private Map<Integer, CyclingStage> stages;
 	private Map<Integer, CyclingTeam> teams;
 	private Map<Integer, CyclingRider> riders;
+	private Map<Integer, CyclingResult> resultsMap;
 
     @Override
 	public int[] getRaceIds() {
@@ -425,9 +426,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("RiderId not recognised: " + riderId);
 		}
 
-		// Get stage and rider 
+		// Get stage
 		CyclingStage stage = stages.get(stageId);
-		CyclingRider rider = riders.get(riderId);
 
 		// Check if stage state is in the "waiting for results" state
 		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
@@ -435,7 +435,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Check if the rider already has results for the stage 
-		if (stage.hasRiderResult(riderId)) {
+		if (resultsMap.containsKey(riderId)) {
 			throw new DuplicatedResultException("Rider already ahs a result.");
 		}
 
@@ -446,12 +446,13 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 		
 		// Create a new CyclingResults object
-		CyclingResult results = new CyclingResult(riderId, stageId, checkpoints);
+		CyclingResult riderResult = resultsMap.getOrDefault(riderId, new CyclingResult());
 		
 		// Add results to stage and rider 
-		// NEED TO MAKE addResults FUNCTION
-		stage.addResults(results);
-		rider.addResults(results);
+		riderResult.addResults(checkpoints);
+
+		// Store result in result map 
+		resultsMap.put(riderId, riderResult);
 		
 		// Update the stage state to "results recorded"
 		stage.setStageState(StageState.RESULTS_FINALISED);

@@ -103,16 +103,6 @@ public class CyclingStage {
         return getCheckpoints().size();
     }
 
-    public boolean hasRiderResult(int riderId) {
-
-        for (CyclingResult result : results) {
-            if (result.getRiderId() == riderId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public String toString() {
         return "CyclingStage{" +
