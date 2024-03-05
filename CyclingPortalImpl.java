@@ -11,7 +11,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	private Map<Integer, CyclingStage> stages;
 	private Map<Integer, CyclingTeam> teams;
 	private Map<Integer, CyclingRider> riders;
-	private Map<Integer, CyclingResult> resultsMap;
+	private Map<Integer, CyclingResult> riderResultsMap;
+	private Map<Integer, CyclingResult> stageResultsMap;
 
     @Override
 	public int[] getRaceIds() {
@@ -435,24 +436,26 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Check if the rider already has results for the stage 
-		if (resultsMap.containsKey(riderId)) {
-			throw new DuplicatedResultException("Rider already ahs a result.");
+		if (riderResultsMap.containsKey(riderId)) {
+			throw new DuplicatedResultException("Rider already has a result.");
 		}
 
 		// Check if number of checkpoint time is valid
-		int expectedCheckpointCount = stage.getNumberOfCheckpoints() + 2; // for start and finish
-		if (checkpoints.length != expectedCheckpointCount) {
+		if (checkpoints.length != stage.getNumberOfCheckpoints() + 2) {
 			throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
 		}
 		
 		// Create a new CyclingResults object
-		CyclingResult riderResult = resultsMap.getOrDefault(riderId, new CyclingResult());
+		CyclingResult riderResult = riderResultsMap.getOrDefault(riderId, new CyclingResult());
 		
 		// Add results to stage and rider 
-		riderResult.addResults(checkpoints);
+		riderResult.addCheckpointTimes(checkpoints);
 
-		// Store result in result map 
-		resultsMap.put(riderId, riderResult);
+		// Store result in rider result map 
+		riderResultsMap.put(riderId, riderResult);
+
+		// Store results in stage results map
+		stageResultsMap.put(stageId, riderResult);
 		
 		// Update the stage state to "results recorded"
 		stage.setStageState(StageState.RESULTS_FINALISED);
@@ -461,8 +464,27 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Verifies stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id not recognised:" + stageId);
+		}
+
+		// Verifies rider Id 
+		if (!riders.containsKey(riderId)) {
+			throw new IDNotRecognisedException("Rider Id not recognised:" + riderId);
+		}
+
+		// Retrieve the CyclingResult object for the rider
+		CyclingResult riderResult = riderResultsMap.get(riderId);
+
+		if (riderResult == null) {
+			// If there are no results for the rider, return empty array
+			return new LocalTime[0];
+		} 
+
+		// Returns the result hashmap of the specific stage
+		return stageResultsMap.get(stageId);
 	}
 
 	@Override

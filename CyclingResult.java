@@ -3,6 +3,8 @@ package cycling;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CyclingResult {
     
@@ -21,6 +23,7 @@ public class CyclingResult {
     private int sprintPoints;
     // If riders are less than a second apart, both riders get the fastest time of the two
     private LocalTime[] adjustedElapsedTime;
+    // Map to store results for each stage
 
     public CyclingResult(int riderId, int stageId, List<LocalTime> checkpointTimes,
     LocalTime[] totalElapsedTime, int position, int points, int mountainPoints,
@@ -33,6 +36,7 @@ public class CyclingResult {
         this.sprintPoints = sprintPoints;
         this.adjustedElapsedTime = calculateAdjustedElapsedTime(totalElapsedTime);
         this.totalElapsedTime = calculateTotalElapsedTime(checkpointTimes);
+        stageResultsMap = new HashMap<>();
 
 
         this.checkpointTimes = new LocalTime[checkpointTimes.length];
@@ -117,7 +121,7 @@ public class CyclingResult {
         return "CyclingResult{" +
                 "riderId=" + riderId +
                 ", stageId=" + stageId +
-                ", checkpointTimes=" + Arrays.toString(checkpointTimes) +
+                ", checkpoint times=" + Arrays.toString(checkpointTimes) +
                 ", position=" + position +
                 ", points=" + points +
                 ", mountain points=" + mountainPoints +
