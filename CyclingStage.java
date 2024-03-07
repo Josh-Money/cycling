@@ -1,10 +1,12 @@
 package cycling;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+
 
 public class CyclingStage {
     
+    private int raceId;
     private int stageId;
     private String stageName;
     private String description;
@@ -14,6 +16,18 @@ public class CyclingStage {
     private Map<Integer, Checkpoint> checkpoints;
     private StageState stageState;
     private Map<Integer, CyclingResult> results;
+
+    public CyclingStage(int raceId, int stageId, String stageName, String description, double length, 
+    LocalDateTime startTime, StageType type) {
+        
+        this.raceId = raceId;
+        this.stageId = stageId;
+        this.stageName = stageName;
+        this.description = description;
+        this.length = length;
+        this.startTime = startTime;
+        this.type = type;
+    }
 
     public CyclingStage(int stageId, String stageName, String description, double length, 
     LocalDateTime startTime, StageType type, Map<Integer, Checkpoint> checkpoints, StageState stageState) {
@@ -28,36 +42,40 @@ public class CyclingStage {
         this.stageState = stageState;
     }
 
+    public int getRaceId() {
+        return this.raceId;
+    }
+
     public int getStageId() {
-        return stageId;
+        return this.stageId;
     }
 
     public String getName() {
-        return stageName;
+        return this.stageName;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public double getLength() {
-        return length;
+        return this.length;
     }
 
     public LocalDateTime getStartTime() {
-        return startTime;
+        return this.startTime;
     }
 
     public StageType getType() {
-        return type;
+        return this.type;
     }
 
     public Map<Integer, Checkpoint> getCheckpoints() {
-        return checkpoints;
+        return this.checkpoints;
     }
 
     public StageState getStageState() {
-        return stageState;
+        return this.stageState;
     }
 
     public void setStageState(StageState stageState) {
@@ -73,7 +91,7 @@ public class CyclingStage {
             index++;
         }
         
-        checkpoints.add(index, checkpoint);
+        checkpoints.put(index, checkpoint);
 
         int checkpointId = generateUniqueCheckpointId();
 

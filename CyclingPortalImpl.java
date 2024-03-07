@@ -27,26 +27,26 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return raceIds;	
 	}
 
+	private int getNextRaceID() {
+		
+		// Increments the size of the list to create next raceID
+		return races.size() + 1;
+	}
+
 	@Override
 	public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
 		
-		// Constructor to create new race
-		CyclingRace newRace = new CyclingRace(name, description);
-
 		// Generates unique race id 
 		int raceId = getNextRaceID();
+		
+		// Constructor to create new race
+		CyclingRace newRace = new CyclingRace(raceId, name, description);
 		
 		// Adds new race to the list 
 		races.put(raceId, newRace);
 		
 		// Return the raceId
 		return raceId;
-	}
-
-	private int getNextRaceID() {
-		
-		// Increments the size of the list to create next raceID
-		return races.size() + 1;
 	}
 
 	@Override
@@ -66,7 +66,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
-		//needs work, needs to remove all contents of the race not just race Id
 
 		// Gets raceId from list of races
 		CyclingRace race = races.get(raceId);
@@ -76,7 +75,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
 		}		
 		// Removes the race
-		races.remove(race);      // think this might be race.getraceId() 
+		races.remove(raceId);
 	}
 
 	@Override
@@ -94,6 +93,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return race.getStages().size();
 	}
 
+	public int getNextStageId() {
+		
+		// Increments stageId to create a unique ID
+		return stages.size() + 1;
+	}
+
 	@Override
 	public int addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime,
 			StageType type)
@@ -102,13 +107,21 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Gets raceId from list of races 
 		CyclingRace race = races.get(raceId);
 
+		// Generates stage id
+		int stageId = getNextStageId();
+
+		// Creates new stage using constructor
+		CyclingStage newStage = new CyclingStage(raceId, stageId, stageName, description, length, startTime, type);
+
 		// Check if raceId is not recognised
 		if (race == null) {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
 		}
 		// Check if race name is already in use in the system
-		if (races.containsKey(race.getName())) {
+		for (String name : race.getNameOfStages()) {
+			if (stageName.equals(name)) {
 			throw new IllegalNameException("Name already in use");
+			}
 		}
 		// Check if stage name is valid
 		if (stageName == null || stageName.trim().isEmpty() || stageName.length() > 30 || stageName.contains(" ")){
@@ -119,30 +132,42 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidLengthException("Invalid stage length: " + length);
 		}
 
-		// Creates new stage using constructor
-		CyclingStage newStage = new CyclingStage(stageName, description, length, startTime, type);
-
-		// Generates stage id
-		int stageId = getNextStageId();
+		
 
 		// Adds stage to race
 		race.addStage(newStage); //two parameters used when there is only one parameter in the method cycling.CyclingRace.AddStage()
-	}
-	
-    public int getNextStageId() {
-		
-		// Increments stageId to create a unique ID
-		return stages.size() + 1;
+
+		return stageId;
 	}
 
 	@Override
 	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// intilaise race object 
+		CyclingRace race = races.get(raceId);
+
+		// initialise list of stages in race
+		List<CyclingStage> listOfStages = race.getStages();
+
+		// get size of list 
+		int size = listOfStages.size();
+
+		// create integer array with size of stage list
+		int[] stageIDArrayList = new int[size];
+
+		// cycles through the list of stage and adds stageid for each stage to the integer array
+		for (int i = 0; i < size; i++) {
+			CyclingStage stage = listOfStages.get(i);
+			int stageId = stage.getStageId();
+			stageIDArrayList[i] = stageId;
+		}
+
+		return stageIDArrayList;
 	}
 
 	@Override
 	public double getStageLength(int stageId) throws IDNotRecognisedException {
+		
 		CyclingStage stage = stages.get(stageId);
 
 		if (stage == null) {
@@ -155,17 +180,25 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeStageById(int stageId) throws IDNotRecognisedException {
 		
-		// Gets stageId from list of races
-		CyclingRace stage = stages.get(stageId);
+		// Gets the stage object from the stage id 
+		CyclingStage stage = stages.get(stageId);
 
 		// Check if stageID is recognised
 		if (stage == null) {
 			throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
 		}
-		
-		// Removes the stage
-		stages.remove(stage);
 
+		// gets raceId from stage
+		int raceId = stage.getRaceId();
+
+		// Finds object associated with raceid
+		CyclingRace race = races.get(raceId);
+
+		// Deletes stage from listOfstages and arrayList namesOfStages
+		race.deleteStage(stageId);
+		
+		// Removes the stage from stage hashmap
+		stages.remove(stageId);
 	}
 
 	@Override
@@ -227,7 +260,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Verifies stage is in the right state
 		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("");
+			throw new InvalidStageStateException("Stage is waiting for results. ");
 		}
 
 		// Verifies that the stage is not a time-trial

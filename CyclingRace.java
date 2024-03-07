@@ -1,9 +1,7 @@
 package cycling;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CyclingRace {
     
@@ -12,38 +10,57 @@ public class CyclingRace {
     private String description;
     private List<CyclingStage> stages;
     private int length;
+    private ArrayList<String> namesOfStages;
 
     public CyclingRace(int raceId, String name, String description) {
         this.raceId = raceId;
         this.name = name;
         this.description = description;
-        this.stages = new ArrayList<>();
     }
 
     public int getRaceId() {
-        return raceId;
+        return this.raceId;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public List<CyclingStage> getStages() {
-        return stages;
+        return this.stages;
     }
 
     public int getLength() {
-        return length;
+        return this.length;
     }
 
     public int addStage(CyclingStage stage){
         stages.add(stage);
+        namesOfStages.add(stage.getName());
 
         return stage.getStageId();
+    }
+
+    public ArrayList<String> getNameOfStages() {
+        return this.namesOfStages;
+    }
+
+    public void deleteStage(int stageId) {
+        for(CyclingStage stage : stages) {
+            if(stage.getStageId() == stageId) {
+                stages.remove(stage);
+                String stageName = stage.getName();
+                for(String name : namesOfStages) {
+                    if(name.equals(stageName)) {
+                        namesOfStages.remove(stageName);
+                    }
+                }
+            }
+        }
     }
 
     @Override
