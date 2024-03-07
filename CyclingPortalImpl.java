@@ -286,19 +286,28 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
 		
-		// Verify checkpoint Id
-		if (!isValidCheckpointId(checkpointId)) {
-			throw new IDNotRecognisedException("Invalid checkpoint ID: " + checkpointId);
-		}
+		CyclingStage stage = findStageByCheckpointId(checkpointId);
 
-		// Verifies stage is in right state
-		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("The stage is not in 'waiting for results' state.");
+		if (stage == null) {
+			throw new IDNotRecognisedException("Checkpoint ID does not match any checkpoint in the system.");
 		}
-
-		// Removes the checkpoint
-		removeCheckpointFromList(checkpointId);
+		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("Cannot modify stage that is waiting for results.");
+		}
+		stage.removeCheckpointFromMap(checkpointId);
 	}
+
+	
+	private CyclingStage findStageByCheckpointId(int checkpointId) { 
+		CyclingStage thestage = null;
+		for (CyclingStage stage: stages.values()) {
+			if(stage.getCheckpoints().containsKey(checkpointId)) {
+				thestage = stage;
+			}
+		}
+		return thestage;
+	}
+
 
 	@Override
 	public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
@@ -329,7 +338,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Retrieves the list of checkpoints which are in order from first to last
-		stage.getCheckpoints();
+		return stage.getCheckpointIds();
 	}
 
 	public int getUniqueTeamId() {
