@@ -146,6 +146,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// intilaise race object 
 		CyclingRace race = races.get(raceId);
 
+		// Throw exception if raceId doesnt exist
+		if (race == null) {
+			throw new IDNotRecognisedException("Race Id not recognised: " + raceId);
+		}
+
 		// initialise list of stages in race
 		List<CyclingStage> listOfStages = race.getStages();
 
@@ -323,24 +328,28 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("Stage Id is not recognised: " + stageId);
 		}
 
-		// Verfies stage is in right state
-		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("The stage is not in 'Waiting for results' state.");
-		}
-
 		// Retrieves the list of checkpoints which are in order from first to last
 		stage.getCheckpoints();
+	}
+
+	public int getUniqueTeamId() {
+		return teams.size() + 1;
 	}
 
 	@Override
 	public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
 		
+		// Generates new team ID
+		int teamId = getUniqueTeamId();
+
 		// Creates a new team 
-		CyclingTeam newTeam = new CyclingTeam(name, description);
+		CyclingTeam newTeam = new CyclingTeam(teamId, name, description);
 
 		// Verifies if team name is already in use
-		if (teams.contains(name)) {
-			throw new IllegalNameException("Name is already in use.");
+		for (String teamName : newTeam.getNamesOfTeamsArray()) {
+			if (name.equals(teamName)) {
+			throw new IllegalNameException("Name already in use");
+			}
 		}
 
 		// Verifies that name is valid
@@ -348,15 +357,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidNameException("Invalid team name: " + name);
 		}
 
-		// Generates new team ID
-		int teamId = getUniqueTeamId();
-
 		// Adds to the teams hashmap
 		teams.put(teamId, newTeam);
-	}
 
-	public int getUniqueTeamId() {
-		return teams.size() + 1;
+		return teamId;
 	}
 
 	@Override

@@ -1,16 +1,20 @@
 package cycling;
 
+import java.util.*;
+
 public class CyclingTeam {
 
     private int teamId;
     private String name;
     private String description;
     private Map<Integer, CyclingRider> riders;
+    private ArrayList<String> namesOfTeams;
     
     public CyclingTeam(int teamId, String name, String description) {
         this.teamId = teamId;
         this.name = name;
         this.description = description;
+        namesOfTeams.add(name);
     }
 
     public String getName() {
@@ -27,6 +31,10 @@ public class CyclingTeam {
 
     public Map<Integer, CyclingRider> getRidersInTeam() {
         return riders;
+    }
+
+    public ArrayList<String> getNamesOfTeamsArray() {
+        return namesOfTeams;
     }
 
     @Override
