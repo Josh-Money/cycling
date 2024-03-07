@@ -93,7 +93,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return race.getStages().size();
 	}
 
-	public int getNextStageId() {
+	private int getNextStageId() {
 		
 		// Increments stageId to create a unique ID
 		return stages.size() + 1;
@@ -299,13 +299,25 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	
 	private CyclingStage findStageByCheckpointId(int checkpointId) { 
-		CyclingStage thestage = null;
+		CyclingStage theStage = null;
+
 		for (CyclingStage stage: stages.values()) {
-			if(stage.getCheckpoints().containsKey(checkpointId)) {
-				thestage = stage;
+			int[] checkpointArray = stage.getCheckpointIds();
+
+			boolean containsCheckpoint = false;
+			for (int i : checkpointArray) {
+				if (i == checkpointId) {
+					containsCheckpoint = true;
+					break;
+				}
+			}
+
+			if (containsCheckpoint) {
+				theStage = stage;
+				break;
 			}
 		}
-		return thestage;
+		return theStage;
 	}
 
 
@@ -341,7 +353,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return stage.getCheckpointIds();
 	}
 
-	public int getUniqueTeamId() {
+	private int getUniqueTeamId() {
 		return teams.size() + 1;
 	}
 
@@ -444,7 +456,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return riderId;
 	}
 
-	public int getNextRiderId() {
+	private int getNextRiderId() {
 		// Generates unique rider Id
 		return riders.size() + 1;
 	}
