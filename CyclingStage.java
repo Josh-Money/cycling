@@ -70,8 +70,19 @@ public class CyclingStage {
         return this.type;
     }
 
-    public Map<Integer, Checkpoint> getCheckpoints() {
-        return this.checkpoints;
+    public  int[] getCheckpointIds() {
+        Map<Integer, Checkpoint> map = this.checkpoints;
+    
+        // Get the keys (IDs) as an Integer array
+        Integer[] keyArray = map.keySet().toArray(new Integer[0]);
+    
+        // Convert Integer[] to int[]
+        int[] ids = new int[keyArray.length];
+        for (int i = 0; i < keyArray.length; i++) {
+            ids[i] = keyArray[i]; // Autounboxing converts Integer to int
+        }
+    
+        return ids;
     }
 
     public StageState getStageState() {
@@ -103,9 +114,9 @@ public class CyclingStage {
         return checkpoints.size() + 1;
     }
 
-    public void removeCheckpointFromList(Checkpoint checkpoint) {
-        // Removes checkpoint from the list chekpoints
-        checkpoints.remove(checkpoint);
+    public void removeCheckpointFromMap(int checkpointId) {
+        // Removes checkpoint from the map chekpoints
+        checkpoints.remove(checkpointId);
     }
 
     public boolean isValidCheckpointId(int checkpointId) {
