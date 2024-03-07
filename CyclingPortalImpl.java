@@ -107,7 +107,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
 		}
 		// Check if race name is already in use in the system
-		if (races.contains(race.getName())) {
+		if (races.containsKey(race.getName())) {
 			throw new IllegalNameException("Name already in use");
 		}
 		// Check if stage name is valid
@@ -133,6 +133,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		// Increments stageId to create a unique ID
 		return stages.size() + 1;
+	}
+
+	@Override
+	public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
