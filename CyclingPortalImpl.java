@@ -387,21 +387,34 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
 		
-		// Creates a new team object
+		// Find team with the teamId
 		CyclingTeam team = teams.get(teamId);
+		
+		// Creates an arrayList filled with riderId for the specific team
+		ArrayList<CyclingRider> riderIdArray = new ArrayList<>();
 
 		// Verifies TeamId 
 		if (!teams.containsKey(teamId)) {
 			throw new IDNotRecognisedException("TeamId not recognised: " + teamId);
 		}
 
-		// Removes the team
+		// Removes the team from team hashmap
 		teams.remove(teamId);
 
-		// Removes all rider associated with that team by deleting riders map in team object 
+		// Removes the team object
+		team.deleteObj();
 
+		// Removes all rider associated with that team from the riders hashmap 
+		for(Map.Entry<Integer, CyclingRider> entry : riders.entrySet()) {
+			if(entry.getValue().getTeamId()==teamId){
+				riders.remove(entry.getKey());
+				riderIdArray.add(entry.getValue());
+			}
+		}
 		// Also remove all rider objects associated with the team
-		
+		for(CyclingRider rider : riderIdArray) {
+			rider.deleteObj();
+		}
 
 	}
 
@@ -412,8 +425,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		List<Integer> teamIds = new ArrayList<>();
 
 		// Loops through the teams hashmap adding the teamId to the list
-		for (CyclingTeam team : teams.values()) {
-			teamIds.add(team.getTeamId());
+		for (Integer team : teams.keySet()) {
+			teamIds.add(team);
 		}
 
 		// Returns the list of teamIds
@@ -432,7 +445,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Returns riders in team
-		return team.getRidersInTeam();
+		return team.getRidersInTeam(teamId);
 	}
 
 	private int getNextRiderId() {
@@ -449,6 +462,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Creates new rider
 		CyclingRider newRider = new CyclingRider(riderId, teamID, name, yearOfBirth);
+		// get team from teams hashmap
+		CyclingTeam team = teams.get(teamID);
 
 		// Verfies teamId
 		if(!teams.containsKey(teamID)) {
@@ -462,6 +477,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Adds rider Id and details to riders hash map
 		riders.put(riderId, newRider);
+
+		// Adds rider to hashmap in team class called ridersInTeam
+		team.addRider(riderId);
 
 		return riderId;
 	}

@@ -7,7 +7,7 @@ public class CyclingTeam {
     private int teamId;
     private String name;
     private String description;
-    private Map<Integer, CyclingRider> riders;
+    private Map<Integer, ArrayList<Integer>> riders;
     private ArrayList<String> namesOfTeams;
     
     public CyclingTeam(int teamId, String name, String description) {
@@ -15,6 +15,8 @@ public class CyclingTeam {
         this.name = name;
         this.description = description;
         namesOfTeams.add(name);
+        ArrayList<Integer> arrayList = null;
+        riders.put(teamId, arrayList);
     }
 
     public String getName() {
@@ -29,15 +31,30 @@ public class CyclingTeam {
         return teamId;
     }
 
-    public Map<Integer, CyclingRider> getRidersInTeam() {
-        return riders;
+    public int[] getRidersInTeam(int teamId) {
+        ArrayList<Integer> arrayList = riders.get(teamId);
+        int[] intArray = new int[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            intArray[i] = arrayList.get(i);
+        }
+
+        return intArray;
     }
 
     public ArrayList<String> getNamesOfTeamsArray() {
         return namesOfTeams;
     }
 
-    public 
+    public void deleteObj() {
+        riders.remove(this.teamId);
+    }
+
+    public void addRider(int riderId) {
+        ArrayList<Integer> arrayList = riders.get(this.teamId);
+        riders.remove(this.teamId);
+        arrayList.add(riderId);
+        riders.put(this.teamId, arrayList);
+    }
 
     @Override
     public String toString() {

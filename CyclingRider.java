@@ -1,33 +1,49 @@
 package cycling;
 
+import java.util.Map;
+
 public class CyclingRider {
     
     private int riderId;
     private int teamId;
     private String name;
     private int yearOfBirth;
+    private Map<Integer, Integer> ridersInTeam;
 
     public CyclingRider(int riderId, int teamId, String name, int yearOfBirth) {
         this.riderId = riderId;
         this.teamId = teamId;
         this.name = name;
         this.yearOfBirth = yearOfBirth;
+        ridersInTeam.put(riderId, teamId);
     }
 
     public int getRiderId() {
-        return riderId;
+        return this.riderId;
     }
 
     public int getTeamId() {
-        return teamId;
+        return this.teamId;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getYearOfBirth() {
-        return yearOfBirth;
+        return this.yearOfBirth;
+    }
+
+    public Map<Integer, Integer> getRidersInTeam() {
+        return ridersInTeam;
+    }
+
+    public void deleteObj() {
+        for (int riderId : ridersInTeam.keySet()) {
+            if (riderId == this.riderId) {
+                ridersInTeam.remove(riderId);
+            }
+        }
     }
 
     @Override
