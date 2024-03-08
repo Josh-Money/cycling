@@ -387,7 +387,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	@Override
 	public void removeTeam(int teamId) throws IDNotRecognisedException {
 		
-		// Creates a new team
+		// Creates a new team object
 		CyclingTeam team = teams.get(teamId);
 
 		// Verifies TeamId 
@@ -396,7 +396,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Removes the team
-		teams.remove(team);
+		teams.remove(teamId);
+
+		// Removes all rider associated with that team by deleting riders map in team object 
+
+		// Also remove all rider objects associated with the team
+		
 
 	}
 
@@ -430,12 +435,20 @@ public class CyclingPortalImpl implements CyclingPortal {
 		return team.getRidersInTeam();
 	}
 
+	private int getNextRiderId() {
+		// Generates unique rider Id
+		return riders.size() + 1;
+	}
+
 	@Override
 	public int createRider(int teamID, String name, int yearOfBirth)
 			throws IDNotRecognisedException, IllegalArgumentException {
 		
+		// Generates unique rider Id
+		int riderId = getNextRiderId();
+
 		// Creates new rider
-		CyclingRider newRider = new CyclingRider(yearOfBirth, teamID, name, yearOfBirth);
+		CyclingRider newRider = new CyclingRider(riderId, teamID, name, yearOfBirth);
 
 		// Verfies teamId
 		if(!teams.containsKey(teamID)) {
@@ -447,18 +460,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IllegalArgumentException("Invalid rider name or year of birth");
 		}
 
-		// Generates unique rider Id
-		int riderId = getNextRiderId();
-
 		// Adds rider Id and details to riders hash map
 		riders.put(riderId, newRider);
 
 		return riderId;
-	}
-
-	private int getNextRiderId() {
-		// Generates unique rider Id
-		return riders.size() + 1;
 	}
 
 	@Override

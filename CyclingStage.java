@@ -38,7 +38,7 @@ public class CyclingStage {
         this.length = length;
         this.startTime = startTime;
         this.type = type;
-        this.checkpoints = new ArrayList<>();
+        this.checkpoints = new HashMap<>();
         this.stageState = stageState;
     }
 
@@ -115,7 +115,7 @@ public class CyclingStage {
     }
 
     public void removeCheckpointFromMap(int checkpointId) {
-        // Removes checkpoint from the map chekpoints
+        // Removes checkpoint from the map checkpoints
         checkpoints.remove(checkpointId);
     }
 
@@ -129,7 +129,7 @@ public class CyclingStage {
 
     public int getNumberOfCheckpoints() {
         //Returns the number of checkpoints
-        return getCheckpoints().size();
+        return getCheckpointIds().length;
     }
 
     @Override
