@@ -577,11 +577,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		
 		CyclingResult riderResult  = riderResults.get(riderId);
-		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId)
+		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId);
 		return riderResult.getAdjustedElapsedTime(elapsedTime);
-
-		// if rider finishes a secnd in front or behind another rider then the time will be adjusted else the rider will used its elapsed time
-		return null;
 	}
 
 	@Override

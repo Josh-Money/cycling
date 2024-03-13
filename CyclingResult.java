@@ -98,22 +98,25 @@ public class CyclingResult {
         return elapsedTime;      
     }
 
+<<<<<<< Updated upstream
     private LocalTime[] calculateAdjustedElapsedTime(LocalTime totalElapsedTime) {
+=======
+<<<<<<< HEAD
+    public LocalTime calculateAdjustedElapsedTime(LocalTime[] totalElapsedTime) {
+=======
+    private LocalTime[] calculateAdjustedElapsedTime(LocalTime totalElapsedTime) {
+>>>>>>> b2fe8548a4c660acfcd76e42b877b281610bdb02
+>>>>>>> Stashed changes
         
-        LocalTime[] adjustedTimes = new LocalTime[totalElapsedTime.length];
-        adjustedTimes[0] = totalElapsedTime[0]; // Start time
+        LocalTime adjustedTime = totalElapsedTime[0];
 
         for (int i = 1; i < totalElapsedTime.length; i++) {
-            Duration timeDifference = Duration.between(totalElapsedTime[i - 1], totalElapsedTime[i]);
-        
-            if (timeDifference.getSeconds() < 1) {
-                adjustedTimes[i] = adjustedTimes[i - 1];
-            } else {
-                adjustedTimes[i] = totalElapsedTime[i];
-            }
+            Duration timeDifference = Duration
         }
 
-        return adjustedTimes;
+
+        if (adjustedTime.isAfter())
+        return adjustedTime;
     }
     public LocalTime[] getStageCheckpointTimes(int stageId){
         return stageResults.get(stageId);
