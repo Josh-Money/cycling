@@ -10,7 +10,7 @@ public class CyclingResult {
     
     private int riderId;
     private int stageId;
-    private List<LocalTime> checkpointTimes;
+    private LocalTime[] checkpointTimes;
     // Total time for a rider in a stage
     private LocalTime[] totalElapsedTime;
     // Finishing position
@@ -25,7 +25,7 @@ public class CyclingResult {
     private LocalTime[] adjustedElapsedTime;
     // Map to store results for each stage
 
-    public CyclingResult(int riderId, int stageId, List<LocalTime> checkpointTimes,
+    public CyclingResult(int riderId, int stageId, LocalTime[] checkpointTimes,
     LocalTime[] totalElapsedTime, int position, int points, int mountainPoints,
     int sprintPoints, LocalTime[] adjustedElapsedTime) {
         this.riderId = riderId;
@@ -69,7 +69,7 @@ public class CyclingResult {
         return sprintPoints;
     }
 
-    public LocalTime getAdjustedElapsedTime() {
+    public LocalTime[] getAdjustedElapsedTime() {
         return adjustedElapsedTime;
     }
 
@@ -78,7 +78,7 @@ public class CyclingResult {
     }
 
     public LocalTime[] getCheckpointTimes() {
-        return Arrays.copyOf(checkpointTimes, checkpointTimes.size());
+        return Arrays.copyOf(checkpointTimes, checkpointTimes.length);
     }
 
     public void addCheckpointTimes(LocalTime... times) {
@@ -89,7 +89,7 @@ public class CyclingResult {
 
     private LocalTime[] calculateTotalElapsedTime(LocalTime[] checkpointTimes) {
 
-        LocalTime[] result = new LocalTime[checkpointTimes.length];
+        LocalTime[] result = new LocalTime[checkpointTimes.length + 2];
         result[0] = checkpointTimes[0];
         for (int i = 1; i < checkpointTimes.length; i++) {
             result[i] = result[i - 1].plusSeconds(checkpointTimes[i].toSecondOfDay());

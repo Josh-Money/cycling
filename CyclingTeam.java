@@ -20,15 +20,15 @@ public class CyclingTeam {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public int getTeamId() {
-        return teamId;
+        return this.teamId;
     }
 
     public int[] getRidersInTeam(int teamId) {

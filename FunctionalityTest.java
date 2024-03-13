@@ -1,21 +1,14 @@
 package cycling;
-import cycling.CyclingPortalImpl;
 import java.util.Arrays;
 
 public class FunctionalityTest {
-    public static void getRaceIdsTest() {
-	// Instantiate CyclingPortalImpl
-        CyclingPortalImpl cyclingPortal = new CyclingPortalImpl();
+    public int[] testRaceIdList() {
+        
+        MiniCyclingPortal portal = new MiniCyclingPortal();
 
-        // Assuming you have some races added to the portal, call getRaceIds
-        int[] raceIds = cyclingPortal.getRaceIds();
-
-        // Print the raceIds
-        System.out.println("Race IDs: " + Arrays.toString(raceIds));
-    }
-	
-    public static void main(String[] args) {
-        getRaceIdsTest();   
+        portal.createRace("Exeter", "Flat");
+        int[] test = portal.getRaceIds();
+        return test;
     }
 }
 

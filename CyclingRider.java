@@ -38,7 +38,7 @@ public class CyclingRider {
         return ridersInTeam;
     }
 
-    public void deleteObj() {
+    public void deleteRiderObject() {
         for (int riderId : ridersInTeam.keySet()) {
             if (riderId == this.riderId) {
                 ridersInTeam.remove(riderId);
