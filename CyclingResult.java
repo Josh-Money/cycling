@@ -91,16 +91,14 @@ public class CyclingResult {
     }
 
  
-    private LocalTime calculateTotalElapsedTime(stageId) {
-        checkpointTimes = stageResults.get(stageId);
+    public LocalTime calculateTotalElapsedTime(int stageId) {
+        LocalTime[] checkpointTimes = stageResults.get(stageId);
         Duration duration = Duration.between(checkpointTimes[0], checkpointTimes[checkpointTimes.length - 1]);
-        elapsedTime = LocalTime.ofNanoOfDay(duration.toNanos());
-        return elapsedTime 
-
-        
+        LocalTime elapsedTime = LocalTime.ofNanoOfDay(duration.toNanos());
+        return elapsedTime;      
     }
 
-    private LocalTime[] calculateAdjustedElapsedTime(LocalTime[] totalElapsedTime) {
+    private LocalTime[] calculateAdjustedElapsedTime(LocalTime totalElapsedTime) {
         
         LocalTime[] adjustedTimes = new LocalTime[totalElapsedTime.length];
         adjustedTimes[0] = totalElapsedTime[0]; // Start time

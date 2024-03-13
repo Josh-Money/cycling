@@ -55,6 +55,12 @@ public class CyclingTeam {
         arrayList.add(riderId);
         riders.put(this.teamId, arrayList);
     }
+    public void removeRider(int riderId) {
+        ArrayList<Integer> arrayList = riders.get(this.teamId);
+        riders.remove(this.teamId);
+        arrayList.remove(riderId);
+        riders.put(this.teamId, arrayList);
+    }
 
     @Override
     public String toString() {

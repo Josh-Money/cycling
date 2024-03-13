@@ -501,6 +501,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		rider.deleteRiderObject();
 		
 		// Updates riders team without the rider
+		int teamId = rider.getTeamId();
+		CyclingTeam team = teams.get(teamId);
+		team.removeRider(riderId);
+
+		// Removes riders results
+		riderResults.remove(riderId);
 	}
 
 	@Override
@@ -522,7 +528,7 @@ public class CyclingPortalImpl implements CyclingPortal {
             throw new DuplicatedResultException("Rider already has a result for this stage.");
         }
 
-		CyclingStage stage = stages.get(stageId)
+		CyclingStage stage = stages.get(stageId);
 
         if (checkpoints.length != stage.getNumberOfCheckpoints() + 2) {
             throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
@@ -560,13 +566,21 @@ public class CyclingPortalImpl implements CyclingPortal {
 		} 
 
 		// Returns the result hashmap of the specific stage
-		LocalTime[]  = riderResult.getAdjustedElapsedTime();
-		LocalTime[] checkpoints  = riderResult.getStageCheckpointTimes(stageId); //random comment
+		LocalTime elapsedTime  = riderResult.calculateTotalElapsedTime(stageId);
+		LocalTime[] checkpoints  = riderResult.getStageCheckpointTimes(stageId); 
+		LocalTime[] newCheckpoints =  Arrays.copyOf(checkpoints, checkpoints.length + 1);
+		newCheckpoints[newCheckpoints.length - 1] = elapsedTime;
+		return newCheckpoints;
 	}
 
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		CyclingStage stage = stages.get(stageId);
+		
+		CyclingResult riderResult  = riderResults.get(riderId);
+		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId)
+		return riderResult.getAdjustedElapsedTime(elapsedTime);
+
+		// if rider finishes a secnd in front or behind another rider then the time will be adjusted else the rider will used its elapsed time
 		return null;
 	}
 
