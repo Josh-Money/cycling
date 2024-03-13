@@ -412,7 +412,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 		// Also remove all rider objects associated with the team
 		for(CyclingRider rider : riderIdArray) {
-			rider.deleteObj();
+			rider.deleteRiderObject();
 		}
 
 	}
@@ -494,8 +494,13 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("rider Id not recognised: " + riderId);		
 		}
 
-		// Removes the rider
+		// Removes the rider from riders hashmap
 		riders.remove(riderId);
+
+		// Removes the rider object
+		rider.deleteRiderObject();
+		
+		// Updates riders team without the rider
 	}
 
 	@Override
