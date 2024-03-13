@@ -556,7 +556,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Returns the result hashmap of the specific stage
 		LocalTime[]  = riderResult.getAdjustedElapsedTime();
-		LocalTime[] checkpoints  = riderResult.getStageCheckpointTimes(stageId);
+		LocalTime[] checkpoints  = riderResult.getStageCheckpointTimes(stageId); //random comment
 	}
 
 	@Override
