@@ -4,13 +4,14 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CyclingResult {
     
     private int riderId;
     private int stageId;
-    private List<LocalTime> checkpointTimes;
+    private LocalTime[] checkpointTimes;
     // Total time for a rider in a stage
     private LocalTime[] totalElapsedTime;
     // Finishing position
@@ -24,6 +25,14 @@ public class CyclingResult {
     // If riders are less than a second apart, both riders get the fastest time of the two
     private LocalTime[] adjustedElapsedTime;
     // Map to store results for each stage
+    private Map<Integer, LocalTime[]> stageResults;
+
+
+    public CyclingResult(int riderId, int stageId, LocalTime... checkpointTimes) {
+        this.riderId = riderId;
+        stageResults.put(stageId, checkpointTimes);
+    }
+
 
     public CyclingResult(int riderId, int stageId, List<LocalTime> checkpointTimes,
     LocalTime[] totalElapsedTime, int position, int points, int mountainPoints,
@@ -81,21 +90,14 @@ public class CyclingResult {
         return Arrays.copyOf(checkpointTimes, checkpointTimes.length);
     }
 
-    public void addCheckpointTimes(LocalTime... times) {
-        for (LocalTime time : times) {
-            checkpointTimes.add(time);
-        }
-    }
+ 
+    private LocalTime calculateTotalElapsedTime(stageId) {
+        checkpointTimes = stageResults.get(stageId);
+        Duration duration = Duration.between(checkpointTimes[0], checkpointTimes[checkpointTimes.length - 1]);
+        elapsedTime = LocalTime.ofNanoOfDay(duration.toNanos());
+        return elapsedTime 
 
-    private LocalTime[] calculateTotalElapsedTime(LocalTime[] checkpointTimes) {
-
-        LocalTime[] result = new LocalTime[checkpointTimes.length];
-        result[0] = checkpointTimes[0];
-        for (int i = 1; i < checkpointTimes.length; i++) {
-            result[i] = result[i - 1].plusSeconds(checkpointTimes[i].toSecondOfDay());
-        }
-
-        return result;
+        
     }
 
     private LocalTime[] calculateAdjustedElapsedTime(LocalTime[] totalElapsedTime) {
@@ -115,6 +117,10 @@ public class CyclingResult {
 
         return adjustedTimes;
     }
+    public LocalTime[] getStageCheckpointTimes(int stageId){
+        return stageResults.get(stageId);
+    }
+
 
     @Override
     public String toString() {
