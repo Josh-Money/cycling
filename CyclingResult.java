@@ -87,7 +87,7 @@ public class CyclingResult {
     }
 
     public LocalTime[] getCheckpointTimes() {
-        return Arrays.copyOf(checkpointTimes, checkpointTimes.length);
+        return Arrays.copyOf(checkpointTimes, checkpointTimes.size());
     }
 
  
