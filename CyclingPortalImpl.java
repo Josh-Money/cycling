@@ -578,7 +578,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		CyclingResult riderResult  = riderResults.get(riderId);
 		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId);
-		return riderResult.getAdjustedElapsedTime(elapsedTime);
+		LocalTime[] totalElapsedTimes = riderResult.getTotalElapsedTime();
+		LocalTime[] newElapsedTimes = Arrays.copyOf(totalElapsedTimes, totalElapsedTimes.length + 1);
+		newElapsedTimes[newElapsedTimes.length - 1] = elapsedTime;
+		return riderResult.calculateAdjustedElapsedTime(newElapsedTimes);
 	}
 
 	@Override

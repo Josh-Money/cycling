@@ -92,32 +92,36 @@ public class CyclingResult {
 
  
     public LocalTime calculateTotalElapsedTime(int stageId) {
+        // Retrieve the results for this stage
         LocalTime[] checkpointTimes = stageResults.get(stageId);
+
+        // Finds the duration between first and last checkpoint
         Duration duration = Duration.between(checkpointTimes[0], checkpointTimes[checkpointTimes.length - 1]);
+
+        // Creates a LocalTime variable which uses duration
         LocalTime elapsedTime = LocalTime.ofNanoOfDay(duration.toNanos());
+        
+        // Return the LocalTime Variable whihc represents the elapsed time of a rider in a stage
         return elapsedTime;      
     }
 
-<<<<<<< Updated upstream
-    private LocalTime[] calculateAdjustedElapsedTime(LocalTime totalElapsedTime) {
-=======
-<<<<<<< HEAD
     public LocalTime calculateAdjustedElapsedTime(LocalTime[] totalElapsedTime) {
-=======
-    private LocalTime[] calculateAdjustedElapsedTime(LocalTime totalElapsedTime) {
->>>>>>> b2fe8548a4c660acfcd76e42b877b281610bdb02
->>>>>>> Stashed changes
-        
+
         LocalTime adjustedTime = totalElapsedTime[0];
 
         for (int i = 1; i < totalElapsedTime.length; i++) {
-            Duration timeDifference = Duration
+            Duration timeDifference = Duration.between(totalElapsedTime[i - 1], totalElapsedTime[i]);
+
+            if(timeDifference.getSeconds() < 1) {
+                adjustedTime = adjustedTime.plusSeconds(timeDifference.getSeconds());
+            } else {
+                adjustedTime = totalElapsedTime[i];
+            }
         }
 
-
-        if (adjustedTime.isAfter())
         return adjustedTime;
     }
+
     public LocalTime[] getStageCheckpointTimes(int stageId){
         return stageResults.get(stageId);
     }
