@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 public class CyclingPortalImpl implements CyclingPortal {
 
 	private Map<Integer, CyclingRace> races;
@@ -523,21 +525,22 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
 
         // Check for duplicated result
-    
         if (riderResults.containsKey(riderId)) {
             throw new DuplicatedResultException("Rider already has a result for this stage.");
         }
-
+		
+		// Gets stage object from stage Id
 		CyclingStage stage = stages.get(stageId);
 
         if (checkpoints.length != stage.getNumberOfCheckpoints() + 2) {
             throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
         }
+
+		// Gets result object from rider Id
 		CyclingResult riderResult = new CyclingResult(riderId, stageId, checkpoints);
 		
 		//Maps the rider id to his results
 		riderResults.put(riderId, riderResult);
-
 		
 		// Update the stage state to "results recorded"
 		stage.setStageState(StageState.RESULTS_FINALISED);
@@ -565,35 +568,112 @@ public class CyclingPortalImpl implements CyclingPortal {
 			return new LocalTime[0];
 		} 
 
-		// Returns the result hashmap of the specific stage
+		// Finds the total elapsed time of the rider in that stage
 		LocalTime elapsedTime  = riderResult.calculateTotalElapsedTime(stageId);
+
+		// Gets the stage checkpoint times
 		LocalTime[] checkpoints  = riderResult.getStageCheckpointTimes(stageId); 
+
+		// Creates a new array which is the same as checkpoints but can fit the total elapsed time at the end
 		LocalTime[] newCheckpoints =  Arrays.copyOf(checkpoints, checkpoints.length + 1);
+
+		// Inserts the total elapsed time at the end of the array
 		newCheckpoints[newCheckpoints.length - 1] = elapsedTime;
+
+		// Returns the array of results of the specific stage
 		return newCheckpoints;
 	}
 
 	@Override
 	public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
 		
+		// Verifies stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id not recognised:" + stageId);
+		}
+
+		// Verifies rider Id 
+		if (!riders.containsKey(riderId)) {
+			throw new IDNotRecognisedException("Rider Id not recognised:" + riderId);
+		}
+		
+		// Gets the results object for the specific rider
 		CyclingResult riderResult  = riderResults.get(riderId);
+
+		if (riderResult == null) {
+			// If rider has no result then return null
+			return null; 
+		}
+
+		// Calculates the total elapsed time of the rider in that stage
 		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId);
+
+		// Creates array of all the riders total elapsed times
 		LocalTime[] totalElapsedTimes = riderResult.getTotalElapsedTime();
+
+		// Creates a copied array which has one more element
 		LocalTime[] newElapsedTimes = Arrays.copyOf(totalElapsedTimes, totalElapsedTimes.length + 1);
+
+		// Adds the riders total elapsed time to the new array 
 		newElapsedTimes[newElapsedTimes.length - 1] = elapsedTime;
+
+		// Returns the calculated adjusted elapsed time of the rider using the array of all the riders total elapsed time
 		return riderResult.calculateAdjustedElapsedTime(newElapsedTimes);
 	}
 
 	@Override
 	public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
+		
+		// Verifies stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id not recognised:" + stageId);
+		}
 
+		// Verifies rider Id 
+		if (!riders.containsKey(riderId)) {
+			throw new IDNotRecognisedException("Rider Id not recognised:" + riderId);
+		}
+
+		// Gets the results object for the specific rider
+		CyclingResult riderResult  = riderResults.get(riderId);
+
+		// Removes the stage results in the results object for the specific rider
+		riderResult.deleteStageResults(stageId);
 	}
 
 	@Override
 	public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Verifies stage Id
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id not recognised:" + stageId);
+		}
+
+		// Gets the list of results object for the specific stage
+		CyclingStage stage = stages.get(stageId);
+
+		// Get the adjusted elapsed time for all riders in the stage
+		Map<Integer, LocalTime> riderAdjustedTimes = new HashMap<>();
+		for (Map.Entry<Integer, CyclingResult> entry : riderResults.entrySet()) {
+			int riderId = entry.getKey();
+			CyclingResult result = entry.getValue();
+			if (result.getStageCheckpointTimes(stageId)) {
+				riderAdjustedTimes.put(riderId, getRiderAdjustedElapsedTimeInStage(stageId, riderId));
+			}
+		}
+
+		// Sort results from fastest to slowest based on their adjusted elapsed time
+		List<Map.Entry<Integer, LocalTime>> sortedRiders = new ArrayList<>(riderAdjustedTimes.entrySet());
+		sortedRiders.sort(Map.Entry.comparingByValue());
+		
+		// Determine rank of each rider
+		Map<Integer, Integer> riderRanks = new LinkedHashMap<>();
+		int rank = 1;
+		for (Map.Entry<Integer, LocalTime> entry : sortedRiders) {
+			riderRanks.put(entry.getKey(), rank++);
+		}
+
+		return riderRanks; 
 	}
 
 	@Override

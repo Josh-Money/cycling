@@ -34,7 +34,7 @@ public class CyclingResult {
     }
 
 
-    public CyclingResult(int riderId, int stageId, List<LocalTime> checkpointTimes,
+    public CyclingResult(int riderId, int stageId, LocalTime[] checkpointTimes,
     LocalTime[] totalElapsedTime, int position, int points, int mountainPoints,
     int sprintPoints, LocalTime[] adjustedElapsedTime) {
         this.riderId = riderId;
@@ -87,7 +87,7 @@ public class CyclingResult {
     }
 
     public LocalTime[] getCheckpointTimes() {
-        return Arrays.copyOf(checkpointTimes, checkpointTimes.size());
+        return Arrays.copyOf(checkpointTimes, checkpointTimes.length);
     }
 
  
@@ -124,6 +124,10 @@ public class CyclingResult {
 
     public LocalTime[] getStageCheckpointTimes(int stageId){
         return stageResults.get(stageId);
+    }
+
+    public void deleteStageResults(int stageId) {
+        stageResults.remove(stageId);
     }
 
 
