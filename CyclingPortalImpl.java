@@ -1,9 +1,9 @@
 package cycling;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
+impt
 
 import javax.naming.spi.DirStateFactory.Result;
 
@@ -604,10 +604,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 			// If rider has no result then return null
 			return null; 
 		}
-
+		
 		// Calculates the total elapsed time of the rider in that stage
 		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId);
-
+		/* 
 		// Creates array of all the riders total elapsed times
 		LocalTime[] totalElapsedTimes = riderResult.getTotalElapsedTime();
 
@@ -619,6 +619,22 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Returns the calculated adjusted elapsed time of the rider using the array of all the riders total elapsed time
 		return riderResult.calculateAdjustedElapsedTime(newElapsedTimes);
+		*/
+		// Iterates through all of the riders reasult
+		for (CyclingResult result : riderResults.values()) {
+			// Calculate the elapsed time for the specific stage
+			LocalTime otherElapsedTime =  result.calculateTotalElapsedTime(stageId);
+			Duration duration = Duration.between(elapsedTime, otherElapsedTime);
+			// Checks if the difference between the times is less than one
+			if (duration.getSeconds() < 1) {
+				// returns smaller time
+				return elapsedTime.isBefore(otherElapsedTime) ? elapsedTime : otherElapsedTime;
+			}
+		// if there is no elapsed time within one second of the rider than the adjusted result remains the same as the elapsed time
+		return elapsedTime;
+
+		}
+
 	}
 
 	@Override
