@@ -3,7 +3,6 @@ package cycling;
 import java.io.*;
 import java.time.*;
 import java.util.*;
-impt
 
 import javax.naming.spi.DirStateFactory.Result;
 
@@ -607,19 +606,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		// Calculates the total elapsed time of the rider in that stage
 		LocalTime elapsedTime = riderResult.calculateTotalElapsedTime(stageId);
-		/* 
-		// Creates array of all the riders total elapsed times
-		LocalTime[] totalElapsedTimes = riderResult.getTotalElapsedTime();
 
-		// Creates a copied array which has one more element
-		LocalTime[] newElapsedTimes = Arrays.copyOf(totalElapsedTimes, totalElapsedTimes.length + 1);
-
-		// Adds the riders total elapsed time to the new array 
-		newElapsedTimes[newElapsedTimes.length - 1] = elapsedTime;
-
-		// Returns the calculated adjusted elapsed time of the rider using the array of all the riders total elapsed time
-		return riderResult.calculateAdjustedElapsedTime(newElapsedTimes);
-		*/
 		// Iterates through all of the riders reasult
 		for (CyclingResult result : riderResults.values()) {
 			// Calculate the elapsed time for the specific stage
@@ -712,8 +699,11 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void eraseCyclingPortal() {
-		// TODO Auto-generated method stub
-
+		races.clear();
+		stages.clear();
+		teams.clear();
+		riders.clear();
+		riderResults.clear();
 	}
 
 	@Override
