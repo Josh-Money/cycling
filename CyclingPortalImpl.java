@@ -531,9 +531,15 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Gets stage object from stage Id
 		CyclingStage stage = stages.get(stageId);
 
+		// Checks if there are the right amount of checkpoint times
         if (checkpoints.length != stage.getNumberOfCheckpoints() + 2) {
             throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
         }
+
+		// Checks stage is valid state
+		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("Stage results have been finalised.");
+		}
 
 		// Gets result object from rider Id
 		CyclingResult riderResult = new CyclingResult(riderId, stageId, checkpoints);
@@ -543,7 +549,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		// Update the stage state to "results recorded"
 		stage.setStageState(StageState.RESULTS_FINALISED);
-
 	}
 
 	@Override
@@ -619,9 +624,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 			}
 		// if there is no elapsed time within one second of the rider than the adjusted result remains the same as the elapsed time
 		return elapsedTime;
-
 		}
-
 	}
 
 	@Override
