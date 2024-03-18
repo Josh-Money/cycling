@@ -45,7 +45,6 @@ public class CyclingResult {
         this.sprintPoints = sprintPoints;
         this.adjustedElapsedTime = calculateAdjustedElapsedTime(totalElapsedTime);
         this.totalElapsedTime = calculateTotalElapsedTime(checkpointTimes);
-        stageResultsMap = new HashMap<>();
 
 
         this.checkpointTimes = new LocalTime[checkpointTimes.length];

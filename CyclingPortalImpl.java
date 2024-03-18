@@ -711,13 +711,35 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void saveCyclingPortal(String filename) throws IOException {
-		// TODO Auto-generated method stub
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+			// Saves races, stages, teams, riders and results
+			oos.writeObject(races);
+			oos.writeobject(stages);
+			oos.writeobject(teams);
+			oos.writeObject(riders);
+			oos.writeObject(riderResults);
 
+			System.out.println("Portal data saved successfully.");
+		} catch (IOException e) {
+			System.err.println("Error saving portal data: "+ e.getMessge());
+		}
 	}
 
 	@Override
 	public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+			// Loads all objects
+			races = (Map<Integer, CyclingRace>) ois.readObject();
+			stages = (Map<Integer, CyclingStage>) ois.readObject();
+			teams = (Map<Integer, CyclingTeam>) ois.readObject();
+			riders = (Map<Integer, CyclingRider>) ois.readObject();
+			riderResults = (Map<Integer, CyclingResult>) ois.readObject();
+
+			System.out.println("Portal data loaded successfully.");
+
+		} catch (IOException | ClassNotFoundException e){
+			System.err.println("Error loading portal data: " + e.getMessage());
+		}
 
 	}
 

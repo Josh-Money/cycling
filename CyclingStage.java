@@ -13,9 +13,9 @@ public class CyclingStage {
     private double length;
     private LocalDateTime startTime;
     private StageType type;
-    private Map<Integer, Checkpoint> checkpoints;
+    private Map<Integer, Checkpoint> checkpoints = new HashMap<>();
     private StageState stageState;
-    private Map<Integer, CyclingResult> results;
+    private Map<Integer, CyclingResult> results = new HashMap<>();
 
     public CyclingStage(int raceId, int stageId, String stageName, String description, double length, 
     LocalDateTime startTime, StageType type) {
@@ -38,7 +38,7 @@ public class CyclingStage {
         this.length = length;
         this.startTime = startTime;
         this.type = type;
-        this.checkpoints = new HashMap<>();
+        this.checkpoints = checkpoints;
         this.stageState = stageState;
     }
 
