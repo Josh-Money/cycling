@@ -132,6 +132,25 @@ public class CyclingStage {
         return getCheckpointIds().length;
     }
 
+    public void addResults(int riderId, CyclingResult riderResult) {
+        results.put(riderId, riderResult);
+    }
+
+    public ArrayList<Integer> getRiderIdsWithResults() {
+        ArrayList<Integer> riderIdList = new ArrayList<>(results.keySet());
+    }
+
+    public ArrayList<Integer> getMountainCheckpoints() {
+        ArrayList<Integer> climbCheckpointList = new ArrayList<>();
+        for (int index: checkpoints) {
+            if (checkpoints.getType() == CheckpointType.SPRINT) {
+                break;
+            } else{
+                climbCheckpointList.add(index);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "CyclingStage{" +

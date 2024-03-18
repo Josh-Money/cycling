@@ -7,14 +7,9 @@ public class CatergorizedClimbCheckpoint extends Checkpoint {
 
     public CatergorizedClimbCheckpoint(double location, CheckpointType type, 
     double averageGradient, double length) {
-        super(location);
-        this.type = type;
+        super(location, type);
         this.averageGradient = averageGradient;
         this.length = length;
-    }
-
-    public CheckpointType getType() {
-        return type;
     }
 
     public double getAverageGradient() {

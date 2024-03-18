@@ -546,6 +546,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		//Maps the rider id to his results
 		riderResults.put(riderId, riderResult);
+
+		// Add results to results hashmap in stage class
+		stage.addResults(riderId, riderResult);
 		
 		// Update the stage state to "results recorded"
 		stage.setStageState(StageState.RESULTS_FINALISED);
@@ -684,20 +687,109 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Check stageId exists
+		if (!stage. containsKey(stageId)) {
+			throw new IDNotRecognisedException("STage Id not recognised: " + stageId);
+		}
+
+		// Gets an array of all riderIds that have a result for this stage
+		ArrayList<Integer> riderIds = stage.getRiderIdsWithResults();
+
+		// Map to store rider Id and adjusted elapsed time
+		Map<Integer, Duration> riderAdjustedTimeMap = new HashMap<>();
+
+		// Calculate adjusted elapsed time for each rider
+		for (int riderId : riderIds) {
+			CyclingResult result = riderResults.get(riderId);
+			LocalTime[] totalElapsedTime = result.calculateTotalElapsedTime(stageId);
+			LocalTime[] adjustedTimes = result.calculateAdjustedElapsedTime(totalElapsedTime);
+			Duration adjustedTime = Duration.between(adjustedTimes[0], adjustedTimes[adjustedTimes.length - 1]);
+			riderAdjustedTimeMap.put(riderId, adjustedTime);
+		}
+
+		// Sort the map by adjusted elapsed time
+		List<Map.Entry<Integer, Duration>> sortedEntries = new ArrayList<>(riderAdjustedTimeMap.entrySet());
+		sortedEntries.sort(Map.Entry.comparingByValue());
+
+		//Create a LocalTime Array to store the sorted adjusted elapsed times
+		LocalTime[] rankedAdjustedElapsedTimes = new LocalTime[sortedEntries.size()];
+		for(int i = 0; i < sortedEntries.size(); i++) {
+			// Retrieve the adjusted elapsed time for each rider from the sorted map
+			int riderId = sortedEntries.get(i).getKey();
+			CyclingResult result = riderResults.get(riderId);
+			LocalTime[] totalElapsedTime = result.getTotalElapsedTime();
+			LocalTime[] adjustedTimes = result.calculateAdjustedElapsedTime(totalElapsedTime);
+			// Store the adjusted elapsed time in the array
+			rankedAdjustedElapsedTimes[i] = adjustedTimes[adjustedTimes.length - 1]; // Last checkpoint
+		}
+
+
 	}
 
 	@Override
 	public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Check if stage Id exists
+		if (!stages.containsKey(stageId)) {
+			throw new IDNotRecognisedException("Stage Id not recognised: " + stageId);
+			return new int[0];
+		}
+
+		// Get stage object 
+		CyclingStage stage = stages.get(stageId);
+
+		// Get array of rider Ids that have results for this stage
+		ArrayList<Integer> riderIds = stage.getRiderIdsWithResults();
+
+		// Create an array to store rider points
+		int[] riderPoints = new int[riderIds.size()];
+
+		// Calculate points for each rider based on their result
+		for (int i = 0; i < riderIds.size(); i++) {
+			int riderId = riderIds.get(i);
+
+			// Gets result for specific rider
+			CyclingResult result = riderResults.get(riderId);
+
+			int points = result.calculatePointsForRider(result);//create this function in cycling result
+
+			// Store the points in the int[]
+			riderPoints[i] = points;
+		}
+
+		return riderPoints;
 	}
 
 	@Override
 	public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Gets stage 
+		CyclingStage stage = stages.get(stageId);
+		if (stage == null) {
+			throw new IDNotRecognisedException("Stage Id not recognised: " + stageId);
+			return new int[0];
+		}
+
+		// Get the mountain checkpoints for this stage
+		ArrayList<Integer> mountainCheckpoints = stage.getMountainCheckpoints();
+		
+		// Get array of rider Ids that have results for this stage
+		ArrayList<Integer> riderIds = stage.getRiderIdsWithResults();
+
+		// Initialise an array to store mountain points for each rider
+		int[] mountainPointsArray = new int[riderIds.size()];
+
+		// Iterate over each rider
+		for (int i = 0; i <riderIds.size(); i++) {
+			int riderId = riderIds.get(i);
+
+			CyclingResult result = riderResults.get(riderId);
+
+			int mountainPoints = result.calculateMountainPointsForRider();
+		}
+
+		return mountainPointsArray;
 	}
 
 	@Override
