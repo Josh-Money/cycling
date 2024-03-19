@@ -129,6 +129,14 @@ public class CyclingResult {
         stageResults.remove(stageId);
     }
 
+    public int calculatePointsForRider(CyclingResult result) {
+        return null;
+    }
+
+    public int calculateMountainPointsForRider(CyclingResult result, ArrayList<Integer> mountainCheckpoints) {
+        return null;
+    }
+
 
     @Override
     public String toString() {
