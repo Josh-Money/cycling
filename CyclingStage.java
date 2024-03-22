@@ -153,7 +153,6 @@ public class CyclingStage {
         return climbCheckpointList;
     }
 
-
     public ArrayList<Map<Integer, Duration>> calculateMountainCheckpointTimes(ArrayList<Integer> mountainCheckpoints) {
 
         ArrayList<Map<Integer, Duration>> mountainList = new ArrayList<>();
@@ -169,6 +168,32 @@ public class CyclingStage {
         }
         return mountainList;
     }
+
+    public ArrayList<Checkpoint> getSprintCheckpoints() {
+        ArrayList<Integer> sprintCheckpoints = new ArrayList<>();
+        for (int index : checkpoints) {
+            if(checkpoints.getType == CheckpointType.SPRINT) {
+                sprintCheckpoints.add(index);
+            }
+        }
+        return sprintCheckpoints;
+    }
+
+    public ArrayList<Map<Integer,Duration>> calculateSprintCheckpointTimes(ArrayList<Integer> sprintcheckpoints) {
+
+        ArrayList<Map<Integer, Duration>> sprintList = new ArrayList<>();
+
+        for (int index : sprintcheckpoints) {
+            Map<Integer, Duration> sprintCheckpointElapsedTimes = new HashMap<>();
+            for(Map.Entry<Integer, CyclingResult> entry : results.entrySet()) {
+                LocalTime[] checkpointTimes = entry.getValue().getCheckpointTimes();
+                Duration duration = Duration.between(checkpointTimes[index], checkpointTimes[index - 1]);
+                sprintCheckpointElapsedTimes.put(entry.getKey(), duration);
+            }
+            sprintList.add(sprintCheckpointElapsedTimes);
+        }
+        return sprintList;
+    } 
 
     public int getMountainPointsForRider(int position) {
 
@@ -239,6 +264,48 @@ public class CyclingStage {
                 default:
                     return 0;
             }
+        }
+    }
+
+    public int getSprintPoints(int position) {
+        if (this.checkpoints.getType() == CheckpointType.SPRINT) {
+            switch (position) {
+                case 1:
+                    return 20;
+                case 2:
+                    return 17;
+                case 3: 
+                    return 15;
+                case 4: 
+                    return 13;
+                case 5: 
+                    return 11;
+                case 6:
+                    return 10;
+                case 7:
+                    return 9;
+                case 8:
+                    return 8;
+                case 9: 
+                    return 7;
+                case 10: 
+                    return 6;
+                case 11:
+                    return 5;
+                case 12:
+                    return 4;
+                case 13:
+                    return 3;
+                case 14:
+                    return 2;
+                case 15:
+                    return 1;
+                default:
+                    return 0;
+            }
+        } else {
+            // Rider did not finish the stage, so award 0 points
+            return 0;
         }
     }
 
