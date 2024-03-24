@@ -2,11 +2,8 @@ package cycling;
 
 public enum StageState {
     
-    NOT_STARTED,
+    NOT_WAITING_FOR_RESULTS,
     
-    IN_PROGRESS,
+    WAITING_FOR_RESULTS;
     
-    WAITING_FOR_RESULTS,
-    
-    RESULTS_FINALISED;
 }

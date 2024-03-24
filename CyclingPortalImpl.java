@@ -9,22 +9,55 @@ import javax.naming.spi.DirStateFactory.Result;
 
 public class CyclingPortalImpl implements CyclingPortal {
 
-	private Map<Integer, CyclingRace> races;
-	private Map<Integer, CyclingStage> stages;
-	private Map<Integer, CyclingTeam> teams;
-	private Map<Integer, CyclingRider> riders;
-    private Map<Integer, CyclingResult> riderResults;
-	private Map<Integer, Map<LocalTime, Integer>> stageElapsedTimes;
+	private Map<Integer, CyclingRace> races = new HashMap<>();
+	private Map<Integer, CyclingStage> stages = new HashMap<>();
+	private Map<Integer, CyclingTeam> teams = new HashMap<>();
+	private Map<Integer, CyclingRider> riders = new HashMap<>();
+    private Map<Integer, CyclingResult> riderResults = new HashMap<>();
+	private Map<Integer, Map<LocalTime, Integer>> stageElapsedTimes = new HashMap<>();
+	private int raceCounter = 0;
+	private int stageCounter = 0;
+	private int teamCounter = 0;
+	private int riderCounter = 0;
+
+	public CyclingStage getStageById(int stageId) throws IDNotRecognisedException {
+    	if (!stages.containsKey(stageId)) {
+        	throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
+    	}
+    	return stages.get(stageId);
+	}
+
+	public CyclingRace getRaceById(int raceId) throws IDNotRecognisedException {
+    	if (!stages.containsKey(raceId)) {
+        	throw new IDNotRecognisedException("Stage ID not recognised: " + raceId);
+    	}
+    	return races.get(raceId);
+	}
+
+	public CyclingTeam getTeamById(int teamId) throws IDNotRecognisedException {
+    	if (!teams.containsKey(teamId)) {
+        	throw new IDNotRecognisedException("Stage ID not recognised: " + teamId);
+    	}
+    	return teams.get(teamId);
+	}
+
+	public CyclingRider getRiderById(int riderId) throws IDNotRecognisedException {
+    	if (!riders.containsKey(riderId)) {
+        	throw new IDNotRecognisedException("Stage ID not recognised: " + riderId);
+    	}
+    	return riders.get(riderId);
+	}
 
     @Override
 	public int[] getRaceIds() {
 		
-		// Creates an integer list of raceIds
-		int[] raceIds = new int[races.size()];
+		Set<Integer> keySet = races.keySet();
 
-		// Iterates through the list of raceIds
-		for (int i = 0; i < races.size(); i++) {
-			raceIds[i] = races.get(i).getRaceId();
+		Integer[] keyArray = keySet.toArray(new Integer[0]);
+
+		int[] raceIds = new int[keyArray.length];
+		for (int i = 0; i < keyArray.length; i++) {
+			raceIds[i] = keyArray[i];
 		}
 		return raceIds;	
 	}
@@ -32,7 +65,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	private int getNextRaceID() {
 		
 		// Increments the size of the list to create next raceID
-		return races.size() + 1;
+		return raceCounter += 1;
 	}
 
 	@Override
@@ -98,7 +131,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	private int getNextStageId() {
 		
 		// Increments stageId to create a unique ID
-		return stages.size() + 1;
+		return stageCounter += 1;
 	}
 
 	@Override
@@ -134,10 +167,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidLengthException("Invalid stage length: " + length);
 		}
 
-		
-
 		// Adds stage to race
-		race.addStage(newStage); //two parameters used when there is only one parameter in the method cycling.CyclingRace.AddStage()
+		race.addStage(newStage); 
 
 		return stageId;
 	}
@@ -231,7 +262,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Verifies stage is in the right state
 		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("");
+			throw new InvalidStageStateException("Stage is waiting for results.");
 		}
 
 		// Verifies that the stage is not a time-trial
@@ -334,8 +365,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Verifies stage state
-		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("The stage is not in 'waiting for results' state.");
+		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
+			throw new InvalidStageStateException("The stage is already waiting for results.");
 		}
 
 		// Set stage state to 'Waiting for results'
@@ -356,7 +387,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	}
 
 	private int getUniqueTeamId() {
-		return teams.size() + 1;
+		return teamCounter += 1;
 	}
 
 	@Override
@@ -452,7 +483,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	private int getNextRiderId() {
 		// Generates unique rider Id
-		return riders.size() + 1;
+		return riderCounter += 1;
 	}
 
 	@Override
@@ -553,7 +584,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		stage.addResults(riderId, riderResult);
 		
 		// Update the stage state to "results recorded"
-		stage.setStageState(StageState.RESULTS_FINALISED);
+		stage.setStageState(StageState.NOT_WAITING_FOR_RESULTS);
 	}
 
 	@Override

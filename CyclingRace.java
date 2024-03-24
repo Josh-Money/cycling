@@ -35,6 +35,9 @@ public class CyclingRace {
     }
 
     public int getLength() {
+        for(CyclingStage stage : stages) {
+            length +=stage.getLength();
+        }
         return this.length;
     }
 
