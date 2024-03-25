@@ -34,7 +34,7 @@ public class CyclingPortalApp {
             System.out.println("Intermediate sprint checkpoint added to stage with checkpoint Id: " + intermediateSprintId);
 
             int[] stageCheckpoints = portal.getStageCheckpoints(stageId);
-            System.out.println("Checkpoints for this stageID, " + stageId + ": " + stageCheckpoints);
+            System.out.println("Checkpoints for this stageID, " + stageId + ": " + Arrays.toString(stageCheckpoints));
 
             int teamId = portal.createTeam("Team14", "Description of team A");
             System.out.println("New team created with ID: " + teamId);
@@ -48,26 +48,31 @@ public class CyclingPortalApp {
             int[] riderIds = portal.getTeamRiders(teamId);
             System.out.println("Rider ids: " + Arrays.toString(riderIds));
 
-            // LocalTime[] riderResultsInStage = portal.getRiderResultsInStage(stageId, riderId);
-            // System.out.println("Checkpoint times for rider with id: " + riderId + "for stage with id: " + stageId + ": " + riderResultsInStage);
+            portal.registerRiderResultsInStage(stageId, riderId, LocalTime.of(0, 30, 0), LocalTime.of(1,1,1), LocalTime.of(1, 20, 2), LocalTime.of(2, 40, 8));
 
-            // LocalTime riderAdjustedTime = portal.getRiderAdjustedElapsedTimeInStage(stageId, riderId);
-            //System.out.println("Adjusted time for rider: " + riderId + "for stage: " + stageId + "is: " + riderAdjustedTime);
+            LocalTime[] riderResultsInStage = portal.getRiderResultsInStage(stageId, riderId);
+            System.out.println("Checkpoint times for rider with id: " + riderId + " for stage with id: " + stageId + ": ");
+            for (LocalTime time : riderResultsInStage) {
+                System.out.print(time + " ");
+            }
+            System.out.print("\n");
+            LocalTime riderAdjustedTime = portal.getRiderAdjustedElapsedTimeInStage(stageId, riderId);
+            System.out.println("Adjusted time for rider: " + riderId + " ,for stage: " + stageId + " is: " + riderAdjustedTime);
  
-            //int[] rankOfRidersInStage = portal.getRidersRankInStage(stageId); // Test with multiple riders
-            //System.out.println("The placement of the riders for this stage, by riderId is: " + rankOfRidersInStage);
+            int[] rankOfRidersInStage = portal.getRidersRankInStage(stageId); // Test with multiple riders
+            System.out.println("The placement of the riders for this stage, by riderId is: " + Arrays.toString(rankOfRidersInStage));
 
-            //LocalTime[] rankedAdjustedTime = portal.getRankedAdjustedElapsedTimesInStage(stageId);
-            //System.out.println("The placement pf the riders is sorted by their elapsed time: " + rankedAdjustedTime);
+            LocalTime[] rankedAdjustedTime = portal.getRankedAdjustedElapsedTimesInStage(stageId);
+            System.out.println("The placement pf the riders is sorted by their elapsed time: " + rankedAdjustedTime);
 
-            //int[] riderPointsInStage = portal.getRidersPointsInStage(stageId);
-            //System.out.println("The array of intermediate sprint  and finish line points for each rider: " + riderPointsInStage);
+            int[] riderPointsInStage = portal.getRidersPointsInStage(stageId);
+            System.out.println("The array of intermediate sprint  and finish line points for each rider: " + riderPointsInStage);
 
-            //int[] ridersMountainPointsInStage = portal.getRidersMountainPointsInStage(stageId);
-            //System.out.println("The array of riders points from mountian summmits: " + ridersMountainPointsInStage);
+            int[] ridersMountainPointsInStage = portal.getRidersMountainPointsInStage(stageId);
+            System.out.println("The array of riders points from mountian summmits: " + ridersMountainPointsInStage);
 
-            //LocalTime[] getGCTimes = portal.getGeneralClassificationTimesInRace(raceId);
-            //System.out.println("The list of rider times for the general classification in race " + raceId + ": " + getGCTimes);
+            LocalTime[] getGCTimes = portal.getGeneralClassificationTimesInRace(raceId);
+            System.out.println("The list of rider times for the general classification in race " + raceId + ": " + getGCTimes);
 
             int[] riderPointsInRace = portal.getRidersPointsInRace(raceId);
             System.out.println("The list of riders points from final and intermediate sprints for race " + raceId + ": " + riderPointsInRace);

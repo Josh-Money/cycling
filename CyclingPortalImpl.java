@@ -567,6 +567,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Gets stage object from stage Id
 		CyclingStage stage = stages.get(stageId);
 
+		stage.setStageState(StageState.WAITING_FOR_RESULTS);
+
 		// Checks if there are the right amount of checkpoint times
         if (checkpoints.length != stage.getNumberOfCheckpoints() + 2) {
             throw new InvalidCheckpointTimesException("Invalid number of checkpoint times.");
@@ -574,7 +576,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// Checks stage is valid state
 		if (stage.getStageState() != StageState.WAITING_FOR_RESULTS) {
-			throw new InvalidStageStateException("Stage results have been finalised.");
+			throw new InvalidStageStateException("Stage results have already been finalised.");
 		}
 
 		// Gets result object from rider Id
@@ -706,14 +708,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Sort results from fastest to slowest based on their adjusted elapsed time
-		List<Map.Entry<Integer, LocalTime>> sortedRiders = new ArrayList<>(riderAdjustedTimes.entrySet());
+		ArrayList<Map.Entry<Integer, LocalTime>> sortedRiders = new ArrayList<>(riderAdjustedTimes.entrySet());
 		sortedRiders.sort(Map.Entry.comparingByValue());
 		
 		// Determine rank of each rider
 		int[] riderRanks = new int[sortedRiders.size()];
 
 		// List of all riderIds
-		List<Integer> riderIdList = new ArrayList<>(sortedRiders.keySet());
+		ArrayList<Integer> riderIdList = new ArrayList<>();
+
+		for (Map.Entry<Integer, LocalTime> entry : sortedRiders) {
+			riderIdList.add(entry.getKey());
+		}
 
 		// Adds sorted riders into int[] by their riderId
 		for(int i = 1; i < sortedRiders.size(); i++) {

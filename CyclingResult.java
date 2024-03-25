@@ -25,7 +25,7 @@ public class CyclingResult {
     // If riders are less than a second apart, both riders get the fastest time of the two
     private LocalTime[] adjustedElapsedTime;
     // Map to store results for each stage
-    private Map<Integer, LocalTime[]> stageResults;
+    private Map<Integer, LocalTime[]> stageResults = new HashMap<>();
 
 
     public CyclingResult(int riderId, int stageId, LocalTime... checkpointTimes) {
