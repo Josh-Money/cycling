@@ -7,15 +7,14 @@ public class CyclingTeam {
     private int teamId;
     private String name;
     private String description;
-    private Map<Integer, ArrayList<Integer>> riders;
-    private ArrayList<String> namesOfTeams;
+    private Map<Integer, ArrayList<Integer>> riders = new HashMap<>();
+    private ArrayList<String> namesOfTeams = new ArrayList<>();
     
     public CyclingTeam(int teamId, String name, String description) {
         this.teamId = teamId;
         this.name = name;
         this.description = description;
-        namesOfTeams.add(name);
-        ArrayList<Integer> arrayList = null;
+        ArrayList<Integer> arrayList = new ArrayList<>();
         riders.put(teamId, arrayList);
     }
 
@@ -43,6 +42,10 @@ public class CyclingTeam {
 
     public ArrayList<String> getNamesOfTeamsArray() {
         return namesOfTeams;
+    }
+
+    public void addTeamName() {
+        namesOfTeams.add(name);
     }
 
     public void deleteObj() {

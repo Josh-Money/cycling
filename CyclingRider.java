@@ -1,5 +1,6 @@
 package cycling;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CyclingRider {
@@ -8,7 +9,7 @@ public class CyclingRider {
     private int teamId;
     private String name;
     private int yearOfBirth;
-    private Map<Integer, Integer> ridersInTeam;
+    private Map<Integer, Integer> ridersInTeam = new HashMap<>();
 
     public CyclingRider(int riderId, int teamId, String name, int yearOfBirth) {
         this.riderId = riderId;

@@ -411,6 +411,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidNameException("Invalid team name: " + name);
 		}
 
+		newTeam.addTeamName();
+
 		// Adds to the teams hashmap
 		teams.put(teamId, newTeam);
 
@@ -925,8 +927,6 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
 		}
 
-		Map<Integer, LocalTime> raceElapsedTimes = new HashMap<>();
-
 		CyclingRace race = races.get(raceId);
 
 		List<CyclingStage> stageList = race.getStages();
@@ -936,7 +936,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Map<Integer, LocalTime> totalElapsedTimes = new HashMap<>();
 
 		for (Integer riderId : riderIds) {
-			LocalTime time = 0;
+			LocalTime time = LocalTime.of(0, 0);
 			totalElapsedTimes.put(riderId, time);
 		}
 
@@ -946,17 +946,19 @@ public class CyclingPortalImpl implements CyclingPortal {
 			for (Map.Entry<LocalTime, Integer> entry : riderElapsedTimeInStage.entrySet()) {
 				int riderId = entry.getValue();
 				LocalTime elapsedTime = totalElapsedTimes.get(riderId);
-				LocalTime newTime = elapsedTime.plus(entry.getKey());
+				LocalTime newTime = elapsedTime.plusHours(entry.getKey().getHour())
+												.plusMinutes(entry.getKey().getMinute())
+												.plusSeconds(entry.getKey().getSecond());
 				totalElapsedTimes.remove(riderId);
 				totalElapsedTimes.put(riderId, newTime);
 			}
 		}
 
-		ArrayList<LocalTime> totalElapsedTimeList = totalElapsedTimes.values();
+		ArrayList<LocalTime> totalElapsedTimeList = new ArrayList<>(totalElapsedTimes.values());
 
 		Collections.sort(totalElapsedTimeList);
 
-		Localtime[] generalClassificationTimes = totalElapsedTimeList.toArray(new LocalTime[totalElapsedTimeList.size()]);
+		LocalTime[] generalClassificationTimes = totalElapsedTimeList.toArray(new LocalTime[0]);
 
 		return generalClassificationTimes;
 	}
