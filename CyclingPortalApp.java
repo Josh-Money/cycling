@@ -18,23 +18,23 @@ public class CyclingPortalApp {
             int[] raceIds = portal.getRaceIds();
             System.out.println("Race ids: " + Arrays.toString(raceIds));
 
-            // int[] stageRaceIds = portal.getRaceStages(raceId);
-            // System.out.println("Stage ids: " + Arrays.toString(stageRaceIds));
+            int[] stageRaceIds = portal.getRaceStages(raceId);
+            System.out.println("Stage ids: " + Arrays.toString(stageRaceIds));
 
-            // double stageLength = portal.getStageLength(stageId);
-            // System.out.println("Stage length: " + stageLength);
+            double stageLength = portal.getStageLength(stageId);
+            System.out.println("Stage length: " + stageLength);
 
             String raceDetails = portal.viewRaceDetails(raceId);
             System.out.println("Details for race with race ID: " + raceId + ": " + raceDetails);
 
-            // int climbCheckpointId = portal.addCategorizedClimbToStage(stageId, 2.0, CheckpointType.C3, 30.4, 1.5);
-            // System.out.println("Climb checkpoint added to stage: " + climbCheckpointId);
+            int climbCheckpointId = portal.addCategorizedClimbToStage(stageId, 2.0, CheckpointType.C3, 30.4, 1.5);
+            System.out.println("Climb checkpoint added to stage with checkpoint Id: " + climbCheckpointId);
 
-            // int intermediateSprintId = portal.addIntermediateSprintToStage(stageId, 3.5);
-            // System.out.println("Intermediate sprint checkpoint added to stage: " + intermediateSprintId);
+            int intermediateSprintId = portal.addIntermediateSprintToStage(stageId, 3.5);
+            System.out.println("Intermediate sprint checkpoint added to stage with checkpoint Id: " + intermediateSprintId);
 
-            // int[] stageCheckpoints = portal.getStageCheckpoints(stageId);
-            // System.out.println("Checkpoints for this stageID, " + stageId + ": " + stageCheckpoints);
+            int[] stageCheckpoints = portal.getStageCheckpoints(stageId);
+            System.out.println("Checkpoints for this stageID, " + stageId + ": " + stageCheckpoints);
 
             int teamId = portal.createTeam("Team14", "Description of team A");
             System.out.println("New team created with ID: " + teamId);

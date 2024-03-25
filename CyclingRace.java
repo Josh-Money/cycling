@@ -8,9 +8,9 @@ public class CyclingRace {
     private int raceId;
     private String name;
     private String description;
-    private List<CyclingStage> stages;
+    private ArrayList<CyclingStage> stages = new ArrayList<>();
     private int length;
-    private ArrayList<String> namesOfStages;
+    private ArrayList<String> namesOfStages = new ArrayList<>();
 
     public CyclingRace(int raceId, String name, String description) {
         this.raceId = raceId;

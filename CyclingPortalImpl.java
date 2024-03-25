@@ -166,6 +166,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		if (length < 5) {
 			throw new InvalidLengthException("Invalid stage length: " + length);
 		}
+		stages.put(stageId, newStage);
 
 		// Adds stage to race
 		race.addStage(newStage); 
@@ -208,7 +209,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		
 		CyclingStage stage = stages.get(stageId);
 
-		if (stage == null) {
+		if (!stages.containsKey(stageId)) {
 			throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
 		}
 
@@ -253,10 +254,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Finds length of stage 
-		length = stages.get(stageId).getLength();
+		double stageLength = stages.get(stageId).getLength();
 
 		// Verfies location is valid
-		if (location > length) {
+		if (location > stageLength) {
 			throw new InvalidLocationException("Location is longer than length of stage");
 		}
 
@@ -307,10 +308,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		}
 
 		// Creates a new IntermediateSprintCheckpoint
-		IntermediateSprintCheckpoint newSprint = new IntermediateSprintCheckpoint(location);
+		Checkpoint newSprintCheckpoint = new Checkpoint(location, CheckpointType.SPRINT);
 
 		// Adds checkpoint to stage and gives it unique ID
-		int checkpointId = stage.addCheckpoint(newSprint);
+		int checkpointId = stage.addCheckpoint(newSprintCheckpoint);
 
 		return checkpointId;
 

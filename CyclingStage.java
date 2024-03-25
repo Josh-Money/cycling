@@ -18,6 +18,7 @@ public class CyclingStage {
     private Map<Integer, Checkpoint> checkpoints = new HashMap<>();
     private StageState stageState;
     private Map<Integer, CyclingResult> results = new HashMap<>();
+    private int checkpointCounter = 0;
 
     public CyclingStage(int raceId, int stageId, String stageName, String description, double length, 
     LocalDateTime startTime, StageType type) {
@@ -73,10 +74,9 @@ public class CyclingStage {
     }
 
     public  int[] getCheckpointIds() {
-        Map<Integer, Checkpoint> map = this.checkpoints;
     
         // Get the keys (IDs) as an Integer array
-        Integer[] keyArray = map.keySet().toArray(new Integer[0]);
+        Integer[] keyArray = checkpoints.keySet().toArray(new Integer[checkpoints.size()]);
     
         // Convert Integer[] to int[]
         int[] ids = new int[keyArray.length];
@@ -97,23 +97,16 @@ public class CyclingStage {
 
     public int addCheckpoint(Checkpoint checkpoint) {
         
-        double checkpointLocation = checkpoint.getLocation();
-
-        int index = 0;
-        while (index < checkpoints.size() && checkpoints.get(index).getLocation() < checkpointLocation) {
-            index++;
-        }
-        
-        checkpoints.put(index, checkpoint);
-
         int checkpointId = generateUniqueCheckpointId();
+
+        checkpoints.put(checkpointId, checkpoint);
 
         return checkpointId;
     }
 
     public int generateUniqueCheckpointId() {
         // Creates unique checkpoint ID
-        return checkpoints.size() + 1;
+        return  checkpointCounter += 1;
     }
 
     public void removeCheckpointFromMap(int checkpointId) {
@@ -350,7 +343,42 @@ public class CyclingStage {
             // Rider did not finish the stage, so award 0 points
             return 0;
         }
-        if (this.type == StageType.HIGH_MOUNTAIN || this.type == StageType.TT) {
+        if (this.type == StageType.HIGH_MOUNTAIN) {
+            switch (position) {
+                case 1:
+                    return 20;
+                case 2:
+                    return 17;
+                case 3: 
+                    return 15;
+                case 4: 
+                    return 13;
+                case 5: 
+                    return 11;
+                case 6:
+                    return 10;
+                case 7:
+                    return 9;
+                case 8:
+                    return 8;
+                case 9: 
+                    return 7;
+                case 10: 
+                    return 6;
+                case 11:
+                    return 5;
+                case 12:
+                    return 4;
+                case 13:
+                    return 3;
+                case 14:
+                    return 2;
+                case 15:
+                    return 1;
+                default:
+                    return 0;
+            }
+        if (this.type == StageType.TT) {
             switch (position) {
                 case 1:
                     return 20;

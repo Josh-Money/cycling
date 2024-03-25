@@ -4,7 +4,7 @@ public class Checkpoint {
     private double location;
     private CheckpointType type;
 
-    public Checkpoint(double location) {
+    public Checkpoint(double location, CheckpointType type) {
         this.location = location;
         this.type = type;
     }
