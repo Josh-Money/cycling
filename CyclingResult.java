@@ -4,14 +4,13 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CyclingResult {
     
     private int riderId;
     private int stageId;
-    private LocalTime[] checkpointTimes;
+    private LocalTime[] checkpointTimes = new LocalTime[0];
     // Total time for a rider in a stage
     private LocalTime[] totalElapsedTime;
     // Finishing position
@@ -23,7 +22,7 @@ public class CyclingResult {
     // Points earned by rider for intermediate sprint checkpoints
     private int sprintPoints;
     // If riders are less than a second apart, both riders get the fastest time of the two
-    private LocalTime[] adjustedElapsedTime;
+    private LocalTime adjustedElapsedTime;
     // Map to store results for each stage
     private Map<Integer, LocalTime[]> stageResults = new HashMap<>();
 
@@ -31,22 +30,6 @@ public class CyclingResult {
     public CyclingResult(int riderId, int stageId, LocalTime... checkpointTimes) {
         this.riderId = riderId;
         stageResults.put(stageId, checkpointTimes);
-    }
-
-
-    public CyclingResult(int riderId, int stageId, LocalTime[] checkpointTimes,
-    LocalTime[] totalElapsedTime, int position, int points, int mountainPoints,
-    int sprintPoints, LocalTime[] adjustedElapsedTime) {
-        this.riderId = riderId;
-        this.stageId = stageId;
-        this.position = position;
-        this.points = points;
-        this.mountainPoints = mountainPoints;
-        this.sprintPoints = sprintPoints;
-        this.adjustedElapsedTime = calculateAdjustedElapsedTime(totalElapsedTime);
-        this.totalElapsedTime = calculateTotalElapsedTime(checkpointTimes);
-
-
         this.checkpointTimes = new LocalTime[checkpointTimes.length];
         for (int i =0; i < checkpointTimes.length; i++) {
             this.checkpointTimes[i] = checkpointTimes[i];
@@ -108,7 +91,8 @@ public class CyclingResult {
 
         LocalTime adjustedTime = totalElapsedTime[0];
 
-        for (int i = 1; i < totalElapsedTime.length; i++) {
+        for (int i = 0; i < totalElapsedTime.length; i++) {
+
             Duration timeDifference = Duration.between(totalElapsedTime[i - 1], totalElapsedTime[i]);
 
             if(timeDifference.getSeconds() < 1) {
@@ -128,15 +112,6 @@ public class CyclingResult {
     public void deleteStageResults(int stageId) {
         stageResults.remove(stageId);
     }
-
-    public int calculatePointsForRider(CyclingResult result) {
-        return null;
-    }
-
-    public int calculateMountainPointsForRider(CyclingResult result, ArrayList<Integer> mountainCheckpoints) {
-        return null;
-    }
-
 
     @Override
     public String toString() {

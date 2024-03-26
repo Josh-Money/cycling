@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import cycling.*;
 
 public class CyclingStage {
     
@@ -133,15 +132,31 @@ public class CyclingStage {
 
     public ArrayList<Integer> getRiderIdsWithResults() {
         ArrayList<Integer> riderIdList = new ArrayList<>(results.keySet());
+
+        return riderIdList;
     }
 
     public ArrayList<Integer> getMountainCheckpoints() {
         ArrayList<Integer> climbCheckpointList = new ArrayList<>();
-        for (int index: checkpoints) {
-            if (checkpoints.getType() == CheckpointType.SPRINT) {
+        for (Checkpoint checkpoint : checkpoints.values()) {
+            double location = checkpoint.getLocation();
+            int position = (int) location;
+            if (checkpoint.getType() == CheckpointType.SPRINT) {
                 break;
             } else{
-                climbCheckpointList.add(index);
+                climbCheckpointList.add(position);
+            }
+        }
+        return climbCheckpointList;
+    }
+
+    public ArrayList<Checkpoint> getMountainCheckpointObjects() {
+        ArrayList<Checkpoint> climbCheckpointList = new ArrayList<>();
+        for (Checkpoint checkpoint : checkpoints.values()) {
+            if (checkpoint.getType() == CheckpointType.SPRINT) {
+                break;
+            } else{
+                climbCheckpointList.add(checkpoint);
             }
         }
         return climbCheckpointList;
@@ -163,11 +178,14 @@ public class CyclingStage {
         return mountainList;
     }
 
-    public ArrayList<Checkpoint> getSprintCheckpoints() {
+    public ArrayList<Integer> getSprintCheckpoints() {
         ArrayList<Integer> sprintCheckpoints = new ArrayList<>();
-        for (int index : checkpoints) {
-            if(checkpoints.getType == CheckpointType.SPRINT) {
-                sprintCheckpoints.add(index);
+
+        for (Checkpoint checkpoint : checkpoints.values()) {
+            double location = checkpoint.getLocation();
+            int position = (int) location;
+            if(checkpoint.getType() == CheckpointType.SPRINT) {
+                sprintCheckpoints.add(position);
             }
         }
         return sprintCheckpoints;
@@ -189,16 +207,15 @@ public class CyclingStage {
         return sprintList;
     } 
 
-    public int getMountainPointsForRider(int position) {
-
-        if (this.checkpoints.getType() == CheckpointType.C4) {
+    public int getMountainPointsForRider(int position, CheckpointType type) {
+        if (type == CheckpointType.C4) {
             switch (position) {
                 case 1:
                     return 1;
                 default:
                     return 0;
             }
-        } else if (this.checkpoints.getType() == CheckpointType.C3) {
+        } else if (type == CheckpointType.C3) {
             switch (position) {
                 case 1:
                     return 2;
@@ -207,7 +224,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else if (this.checkpoints.getType() == CheckpointType.C2) {
+        } else if (type == CheckpointType.C2) {
             switch (position) {
                 case 1:
                     return 5;
@@ -220,7 +237,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else if (this.checkpoints.getType() == CheckpointType.C1) {
+        } else if (type == CheckpointType.C1) {
             switch (position) {
                 case 1:
                     return 10;
@@ -237,7 +254,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else if (this.checkpoints.getType() == CheckpointType.HC) {
+        } else if (type == CheckpointType.HC) {
             switch (position) {
                 case 1:
                     return 20;
@@ -259,47 +276,43 @@ public class CyclingStage {
                     return 0;
             }
         }
+        return position;
     }
 
     public int getSprintPoints(int position) {
-        if (this.checkpoints.getType() == CheckpointType.SPRINT) {
-            switch (position) {
-                case 1:
-                    return 20;
-                case 2:
-                    return 17;
-                case 3: 
-                    return 15;
-                case 4: 
-                    return 13;
-                case 5: 
-                    return 11;
-                case 6:
-                    return 10;
-                case 7:
-                    return 9;
-                case 8:
-                    return 8;
-                case 9: 
-                    return 7;
-                case 10: 
-                    return 6;
-                case 11:
-                    return 5;
-                case 12:
-                    return 4;
-                case 13:
-                    return 3;
-                case 14:
-                    return 2;
-                case 15:
-                    return 1;
-                default:
-                    return 0;
-            }
-        } else {
-            // Rider did not finish the stage, so award 0 points
-            return 0;
+        switch (position) {
+            case 1:
+                return 20;
+            case 2:
+                return 17;
+            case 3: 
+                return 15;
+            case 4: 
+                return 13;
+            case 5: 
+                return 11;
+            case 6:
+                return 10;
+            case 7:
+                return 9;
+            case 8:
+                return 8;
+            case 9: 
+                return 7;
+            case 10: 
+                return 6;
+            case 11:
+                return 5;
+            case 12:
+                return 4;
+            case 13:
+                return 3;
+            case 14:
+                return 2;
+            case 15:
+                return 1;
+            default:
+                return 0;
         }
     }
 
@@ -339,11 +352,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else {
-            // Rider did not finish the stage, so award 0 points
-            return 0;
-        }
-        if (this.type == StageType.HIGH_MOUNTAIN) {
+        } else if (this.type == StageType.HIGH_MOUNTAIN) {
             switch (position) {
                 case 1:
                     return 20;
@@ -378,7 +387,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        if (this.type == StageType.TT) {
+        } else if (this.type == StageType.TT) {
             switch (position) {
                 case 1:
                     return 20;
@@ -413,11 +422,7 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else {
-            // Rider did not finish the stage, so award 0 points
-            return 0;
-        }
-        if (this.type == StageType.MEDIUM_MOUNTAIN) {
+        } else if (this.type == StageType.MEDIUM_MOUNTAIN) {
             switch (position) {
                 case 1:
                     return 30;
@@ -452,11 +457,8 @@ public class CyclingStage {
                 default:
                     return 0;
             }
-        } else {
-            // Rider did not finish the stage, awarded 0 points
-            return 0;
         }
-  
+        return position;
     }
 
     @Override
