@@ -60,9 +60,10 @@ public class CyclingTeam {
     }
     public void removeRider(int riderId) {
         ArrayList<Integer> arrayList = riders.get(this.teamId);
-        riders.remove(this.teamId);
-        arrayList.remove(riderId);
-        riders.put(this.teamId, arrayList);
+        if (arrayList != null) {
+            arrayList.remove(Integer.valueOf(riderId));
+            riders.put(this.teamId, arrayList);
+        }
     }
 
     @Override

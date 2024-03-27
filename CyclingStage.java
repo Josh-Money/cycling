@@ -86,6 +86,10 @@ public class CyclingStage {
         return ids;
     }
 
+    public void deleteStageObj() {
+        
+    }
+
     public StageState getStageState() {
         return this.stageState;
     }
@@ -130,6 +134,10 @@ public class CyclingStage {
         results.put(riderId, riderResult);
     }
 
+    public void removeRiderFromResultsMap(int riderId) {
+        results.remove(riderId);
+    }
+
     public ArrayList<Integer> getRiderIdsWithResults() {
         ArrayList<Integer> riderIdList = new ArrayList<>(results.keySet());
 
@@ -141,11 +149,11 @@ public class CyclingStage {
         for (Checkpoint checkpoint : checkpoints.values()) {
             double location = checkpoint.getLocation();
             int position = (int) location;
-            if (checkpoint.getType() == CheckpointType.SPRINT) {
-                break;
-            } else{
+            if (checkpoint.getType() == CheckpointType.HC || checkpoint.getType() == CheckpointType.C1 
+                || checkpoint.getType() == CheckpointType.C2 || checkpoint.getType() == CheckpointType.C3 
+                || checkpoint.getType() == CheckpointType.C4) {
                 climbCheckpointList.add(position);
-            }
+            } 
         }
         return climbCheckpointList;
     }
@@ -153,11 +161,11 @@ public class CyclingStage {
     public ArrayList<Checkpoint> getMountainCheckpointObjects() {
         ArrayList<Checkpoint> climbCheckpointList = new ArrayList<>();
         for (Checkpoint checkpoint : checkpoints.values()) {
-            if (checkpoint.getType() == CheckpointType.SPRINT) {
-                break;
-            } else{
+            if (checkpoint.getType() == CheckpointType.HC || checkpoint.getType() == CheckpointType.C1 
+                || checkpoint.getType() == CheckpointType.C2 || checkpoint.getType() == CheckpointType.C3 
+                || checkpoint.getType() == CheckpointType.C4) {
                 climbCheckpointList.add(checkpoint);
-            }
+            } 
         }
         return climbCheckpointList;
     }
@@ -170,8 +178,8 @@ public class CyclingStage {
             Map<Integer, Duration> mountainCheckpointElapsedTimes = new HashMap<>();
             for (Map.Entry<Integer, CyclingResult> entry : results.entrySet()) {
                 LocalTime[] checkpointTimes = entry.getValue().getCheckpointTimes();
-                Duration duration = Duration.between(checkpointTimes[index], checkpointTimes[index - 1]);
-                mountainCheckpointElapsedTimes.put(entry.getKey(), duration);
+                Duration duration = Duration.between(checkpointTimes[index - 2], checkpointTimes[index - 1]);
+                mountainCheckpointElapsedTimes.put(entry.getKey(), duration);           
             }
             mountainList.add(mountainCheckpointElapsedTimes);
         }
@@ -199,7 +207,7 @@ public class CyclingStage {
             Map<Integer, Duration> sprintCheckpointElapsedTimes = new HashMap<>();
             for(Map.Entry<Integer, CyclingResult> entry : results.entrySet()) {
                 LocalTime[] checkpointTimes = entry.getValue().getCheckpointTimes();
-                Duration duration = Duration.between(checkpointTimes[index], checkpointTimes[index - 1]);
+                Duration duration = Duration.between(checkpointTimes[index - 2], checkpointTimes[index - 1]);
                 sprintCheckpointElapsedTimes.put(entry.getKey(), duration);
             }
             sprintList.add(sprintCheckpointElapsedTimes);
