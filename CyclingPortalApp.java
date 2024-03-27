@@ -140,7 +140,7 @@ public class CyclingPortalApp {
 
             portal.registerRiderResultsInStage(stageId, riderId5, LocalTime.of(0, 30, 0), LocalTime.of(0,50,1), LocalTime.of(1, 36, 2), LocalTime.of(2, 22, 8), LocalTime.of(3, 46, 27), LocalTime.of(6, 6, 0));
 
-            portal.registerRiderResultsInStage(stageId, riderId6, LocalTime.of(0, 30, 0), LocalTime.of(1,23,1), LocalTime.of(3, 43, 2), LocalTime.of(4, 49, 8), LocalTime.of(6, 3, 46), LocalTime.of(7, 10, 0));
+            portal.registerRiderResultsInStage(stageId, riderId6, LocalTime.of(0, 30, 0), LocalTime.of(1,23,1), LocalTime.of(2, 43, 2), LocalTime.of(4, 49, 8), LocalTime.of(6, 3, 46), LocalTime.of(7, 10, 0));
 
             portal.registerRiderResultsInStage(stageId2, riderId, LocalTime.of(0, 30, 0), LocalTime.of(1,1,1), LocalTime.of(1, 20, 2), LocalTime.of(2, 40, 8), LocalTime.of(3, 40, 7), LocalTime.of(4, 40, 0));
 
@@ -148,11 +148,11 @@ public class CyclingPortalApp {
             
             portal.registerRiderResultsInStage(stageId2, riderId3, LocalTime.of(0, 30, 0), LocalTime.of(1,10,1), LocalTime.of(1, 32, 2), LocalTime.of(2, 49, 8), LocalTime.of(4, 10, 57), LocalTime.of(5, 50, 0));
 
-            portal.registerRiderResultsInStage(stageId2, riderId4, LocalTime.of(0, 30, 0), LocalTime.of(2,20,1), LocalTime.of(3, 47, 2), LocalTime.of(4, 51, 8), LocalTime.of(5, 50, 47), LocalTime.of(7, 50, 0));
+            portal.registerRiderResultsInStage(stageId2, riderId4, LocalTime.of(0, 30, 0), LocalTime.of(2,20,1), LocalTime.of(3, 47, 2), LocalTime.of(4, 51, 8), LocalTime.of(5, 51, 47), LocalTime.of(7, 50, 0));
 
             portal.registerRiderResultsInStage(stageId2, riderId5, LocalTime.of(0, 30, 0), LocalTime.of(0,50,1), LocalTime.of(1, 36, 2), LocalTime.of(2, 22, 8), LocalTime.of(3, 46, 27), LocalTime.of(6, 6, 0));
 
-            portal.registerRiderResultsInStage(stageId2, riderId6, LocalTime.of(0, 30, 0), LocalTime.of(1,23,1), LocalTime.of(3, 43, 2), LocalTime.of(4, 49, 8), LocalTime.of(6, 3, 46), LocalTime.of(7, 10, 0));
+            portal.registerRiderResultsInStage(stageId2, riderId6, LocalTime.of(0, 30, 0), LocalTime.of(1,0,1), LocalTime.of(3, 43, 2), LocalTime.of(4, 49, 8), LocalTime.of(6, 3, 46), LocalTime.of(7, 10, 0));
 
 
             portal.removeRider(riderId6);

@@ -14,8 +14,10 @@ public class CyclingStage {
     private double length;
     private LocalDateTime startTime;
     private StageType type;
+    // Maps checkpoint Id to Checkpoint instance
     private Map<Integer, Checkpoint> checkpoints = new HashMap<>();
     private StageState stageState;
+    // Maps rider Id to RiderResult instance
     private Map<Integer, CyclingResult> results = new HashMap<>();
 
     public CyclingStage(int raceId, int stageId, String stageName, String description, double length, 
@@ -30,18 +32,6 @@ public class CyclingStage {
         this.type = type;
     }
 
-    public CyclingStage(int stageId, String stageName, String description, double length, 
-    LocalDateTime startTime, StageType type, Map<Integer, Checkpoint> checkpoints, StageState stageState) {
-        
-        this.stageId = stageId;
-        this.stageName = stageName;
-        this.description = description;
-        this.length = length;
-        this.startTime = startTime;
-        this.type = type;
-        this.checkpoints = checkpoints;
-        this.stageState = stageState;
-    }
 
     public int getRaceId() {
         return this.raceId;
@@ -51,26 +41,18 @@ public class CyclingStage {
         return this.stageId;
     }
 
-    public String getName() {
-        return this.stageName;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
     public double getLength() {
         return this.length;
-    }
-
-    public LocalDateTime getStartTime() {
-        return this.startTime;
     }
 
     public StageType getType() {
         return this.type;
     }
 
+    public String getName() {
+        return this.stageName;
+    }
+    
     public  int[] getCheckpointIds() {
     
         // Get the keys (IDs) as an Integer array
@@ -85,10 +67,6 @@ public class CyclingStage {
         return ids;
     }
 
-    public void deleteStageObj() {
-
-    }
-
     public StageState getStageState() {
         return this.stageState;
     }
@@ -99,6 +77,7 @@ public class CyclingStage {
 
     public int addCheckpoint(int checkpointId, Checkpoint checkpoint) {
 
+        //Updates checkpoints hashmap wiht new checkpoint
         checkpoints.put(checkpointId, checkpoint);
 
         return checkpointId;
@@ -123,30 +102,40 @@ public class CyclingStage {
     }
 
     public void addResults(int riderId, CyclingResult riderResult) {
+        // Updates results hashmap with new RiderResult instance
         results.put(riderId, riderResult);
     }
 
     public void removeRiderFromResultsMap(int riderId) {
+        // Removes key value pair from results with associated rider Id 
         results.remove(riderId);
     }
 
     public ArrayList<Integer> getRiderIdsWithResults() {
+
+        // Returns the list of riders that contain results from the results keyset
         ArrayList<Integer> riderIdList = new ArrayList<>(results.keySet());
 
         return riderIdList;
     }
 
     public ArrayList<Integer> getMountainCheckpoints() {
+        // Initialises new Integer ArrayList
         ArrayList<Integer> climbCheckpointList = new ArrayList<>();
+        // Iterates through each Checkpoint object in checkpoints hashmap
         for (Checkpoint checkpoint : checkpoints.values()) {
+            // Gets the location of the checkpoint through Checkpoint class method
             double location = checkpoint.getLocation();
             int position = (int) location;
+            // Checks if the checkpoint is any of the mountain types
             if (checkpoint.getType() == CheckpointType.HC || checkpoint.getType() == CheckpointType.C1 
                 || checkpoint.getType() == CheckpointType.C2 || checkpoint.getType() == CheckpointType.C3 
                 || checkpoint.getType() == CheckpointType.C4) {
+                // If condition is satisfied the climbcheckpoint list is updated with the position of the mountain checkpoint
                 climbCheckpointList.add(position);
             } 
         }
+        // Returns list of mountain checkpoints positionss
         return climbCheckpointList;
     }
 
@@ -163,51 +152,72 @@ public class CyclingStage {
     }
 
     public ArrayList<Map<Integer, Duration>> calculateMountainCheckpointTimes(ArrayList<Integer> mountainCheckpoints) {
-
+        // Initialises new ArraList of hashmaps
         ArrayList<Map<Integer, Duration>> mountainList = new ArrayList<>();
 
+        // Iterates through the mountain checkpoints positions 
         for(int index : mountainCheckpoints) {
+            // Initialises new Hashmap
             Map<Integer, Duration> mountainCheckpointElapsedTimes = new HashMap<>();
+            // Iterates through the key value pair in the results hashmap
             for (Map.Entry<Integer, CyclingResult> entry : results.entrySet()) {
+                // Gets the checkpointTimes for each checkpoint object in the hashmap
                 LocalTime[] checkpointTimes = entry.getValue().getCheckpointTimes();
+                // Gets the duration between the mountain checkpoint and the next one in the checkpoint list
                 Duration duration = Duration.between(checkpointTimes[index - 2], checkpointTimes[index - 1]);
+                // Updates the HashMap with the rider Id mapped to elapsed time for the mountain checkpoint
                 mountainCheckpointElapsedTimes.put(entry.getKey(), duration);           
             }
+            // Adds the hashmap to the mountain list ArrayList
             mountainList.add(mountainCheckpointElapsedTimes);
         }
         return mountainList;
     }
 
     public ArrayList<Integer> getSprintCheckpoints() {
-        ArrayList<Integer> sprintCheckpoints = new ArrayList<>();
 
+        // Initialises new ArrayList
+        ArrayList<Integer> sprintCheckpoints = new ArrayList<>();
+        // Iterates through the Checkpoint objects in the checkpoints hashmap
         for (Checkpoint checkpoint : checkpoints.values()) {
+            // Gets the location of the checkpoint
             double location = checkpoint.getLocation();
+            // Converts double variable to int 
             int position = (int) location;
+            // Checks weather checkpoint is type sprint
             if(checkpoint.getType() == CheckpointType.SPRINT) {
+                // If condition is met updates sprintCheckpoints ArrayList with position
                 sprintCheckpoints.add(position);
             }
         }
+        // Returns list of the locations of the sprint checkpoints
         return sprintCheckpoints;
     }
 
     public ArrayList<Map<Integer,Duration>> calculateSprintCheckpointTimes(ArrayList<Integer> sprintcheckpoints) {
-
+        // Initialises ArrayList of hashmaps
         ArrayList<Map<Integer, Duration>> sprintList = new ArrayList<>();
-
+        // Iterates through the positions of the sprint checkpoints
         for (int index : sprintcheckpoints) {
+            // Initialises new hashmap
             Map<Integer, Duration> sprintCheckpointElapsedTimes = new HashMap<>();
+            // Iterates through the results hashmap key value pair
             for(Map.Entry<Integer, CyclingResult> entry : results.entrySet()) {
+                // Gets the checkpoint times for the stage
                 LocalTime[] checkpointTimes = entry.getValue().getCheckpointTimes();
+                // Gets the duration of the sprint checkpoint
                 Duration duration = Duration.between(checkpointTimes[index - 2], checkpointTimes[index - 1]);
+                // Updates the hashmap with the rider id and the duration of the sprint checkpoint
                 sprintCheckpointElapsedTimes.put(entry.getKey(), duration);
             }
+            // Adds the hashmap to the ArrayList
             sprintList.add(sprintCheckpointElapsedTimes);
         }
         return sprintList;
     } 
 
     public int getMountainPointsForRider(int position, CheckpointType type) {
+        // Checks checkpoint type
         if (type == CheckpointType.C4) {
             switch (position) {
                 case 1:
@@ -313,10 +323,12 @@ public class CyclingStage {
                 return 1;
             default:
                 return 0;
+        //Returns the points for each position based on position in checkpoint
         }
     }
 
     public int getRiderPoints(int position) {
+        // Checks the stage type of the stage
         if (this.type == StageType.FLAT) {
             switch (position) {
                 case 1:
@@ -457,12 +469,14 @@ public class CyclingStage {
                 default:
                     return 0;
             }
+        // Returns the position based on the position and stage type
         }
         return position;
     }
 
     @Override
     public String toString() {
+        // Returns string of object instance infomation
         return "CyclingStage{" +
                 "stageId=" + stageId +
                 ", name=" + stageName +
