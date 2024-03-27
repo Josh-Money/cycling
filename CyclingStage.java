@@ -49,6 +49,10 @@ public class CyclingStage {
         return this.type;
     }
 
+    public String getName() {
+        return this.stageName;
+    }
+    
     public  int[] getCheckpointIds() {
     
         // Get the keys (IDs) as an Integer array
