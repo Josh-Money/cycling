@@ -17,7 +17,6 @@ public class CyclingStage {
     private Map<Integer, Checkpoint> checkpoints = new HashMap<>();
     private StageState stageState;
     private Map<Integer, CyclingResult> results = new HashMap<>();
-    private int checkpointCounter = 0;
 
     public CyclingStage(int raceId, int stageId, String stageName, String description, double length, 
     LocalDateTime startTime, StageType type) {
@@ -87,7 +86,7 @@ public class CyclingStage {
     }
 
     public void deleteStageObj() {
-        
+
     }
 
     public StageState getStageState() {
@@ -98,18 +97,11 @@ public class CyclingStage {
         this.stageState = stageState;
     }
 
-    public int addCheckpoint(Checkpoint checkpoint) {
-        
-        int checkpointId = generateUniqueCheckpointId();
+    public int addCheckpoint(int checkpointId, Checkpoint checkpoint) {
 
         checkpoints.put(checkpointId, checkpoint);
 
         return checkpointId;
-    }
-
-    public int generateUniqueCheckpointId() {
-        // Creates unique checkpoint ID
-        return  checkpointCounter += 1;
     }
 
     public void removeCheckpointFromMap(int checkpointId) {

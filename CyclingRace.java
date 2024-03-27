@@ -1,6 +1,5 @@
 package cycling;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class CyclingRace {
@@ -52,19 +51,32 @@ public class CyclingRace {
         return this.namesOfStages;
     }
 
-    public void deleteStage(int stageId) {
-        for(CyclingStage stage : stages) {
-            if(stage.getStageId() == stageId) {
-                stages.remove(stage);
-                String stageName = stage.getName();
-                for(String name : namesOfStages) {
-                    if(name.equals(stageName)) {
-                        namesOfStages.remove(stageName);
-                    }
+    public void deleteStageObject(int stageId) {
+        Iterator<CyclingStage> iterator = stages.iterator();
+        while (iterator.hasNext()) {
+            CyclingStage stage = iterator.next();
+            if (stage.getStageId() == stageId) {
+                iterator.remove();
+                break; 
+            }
+        }
+    }
+    
+
+    public void deleteStageName(int stageId) {
+        Iterator<String> iterator = namesOfStages.iterator();
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+            for (CyclingStage stage : stages) {
+                if (name.equals(stage.getName())) {
+                    iterator.remove(); 
+                    break; 
                 }
             }
         }
     }
+    
+
 
     @Override
     public String toString() {

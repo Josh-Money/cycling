@@ -16,42 +16,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 	private int stageCounter = 0;
 	private int teamCounter = 0;
 	private int riderCounter = 0;
-
-	public CyclingStage getStageById(int stageId) throws IDNotRecognisedException {
-    	if (!stages.containsKey(stageId)) {
-        	throw new IDNotRecognisedException("Stage ID not recognised: " + stageId);
-    	}
-    	return stages.get(stageId);
-	}
-
-	public CyclingRace getRaceById(int raceId) throws IDNotRecognisedException {
-    	if (!stages.containsKey(raceId)) {
-        	throw new IDNotRecognisedException("Stage ID not recognised: " + raceId);
-    	}
-    	return races.get(raceId);
-	}
-
-	public CyclingTeam getTeamById(int teamId) throws IDNotRecognisedException {
-    	if (!teams.containsKey(teamId)) {
-        	throw new IDNotRecognisedException("Stage ID not recognised: " + teamId);
-    	}
-    	return teams.get(teamId);
-	}
-
-	public CyclingRider getRiderById(int riderId) throws IDNotRecognisedException {
-    	if (!riders.containsKey(riderId)) {
-        	throw new IDNotRecognisedException("Stage ID not recognised: " + riderId);
-    	}
-    	return riders.get(riderId);
-	}
+	private int checkpointCounter = 0;
 
     @Override
 	public int[] getRaceIds() {
-		
+
+		//Retrieves the keys of the races hashmap and puts it in a Set<Integer>
 		Set<Integer> keySet = races.keySet();
 
+		// Convert the set to Integer[]
 		Integer[] keyArray = keySet.toArray(new Integer[0]);
 
+		// Convert Integer[] to int[]
 		int[] raceIds = new int[keyArray.length];
 		for (int i = 0; i < keyArray.length; i++) {
 			raceIds[i] = keyArray[i];
@@ -98,29 +74,38 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 	@Override
 	public void removeRaceById(int raceId) throws IDNotRecognisedException {
-
 		// Gets raceId from list of races
 		CyclingRace race = races.get(raceId);
-
+	
 		// Check if raceID is recognised
 		if (race == null) {
 			throw new IDNotRecognisedException("Race ID not recognised: " + raceId);
-		}		
+		}
+		
 		// Removes the race
 		races.remove(raceId);
 
+		// Iterates through the stages in the specified race and removes all relevant information
 		for (CyclingStage stage : race.getStages()) {
 			int stageId = stage.getStageId();
 			stageElapsedTimes.remove(stageId);
-			race.deleteStage(stageId);
-			for(int riderId : riderResults.keySet()) {
-				CyclingResult result = riderResults.get(riderId);
-				if(result.getStageId() == stageId) {
-					riderResults.remove(riderId);
+			race.deleteStageObject(stageId);
+			race.deleteStageName(stageId);
+			stages.remove(stageId);
+	
+			// Create an iterator to safely remove elements
+			Iterator<Map.Entry<Integer, CyclingResult>> iterator = riderResults.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<Integer, CyclingResult> entry = iterator.next();
+				CyclingResult result = entry.getValue();
+				if (result.getStageId() == stageId) {
+					iterator.remove(); // Safe removal using iterator
 				}
 			}
 		}
 	}
+	
+	
 
 	@Override
 	public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
@@ -200,10 +185,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// get size of list 
 		int size = listOfStages.size();
 
-		// create integer array with size of stage list
+		// create int[] with size of stage list
 		int[] stageIDArrayList = new int[size];
 
-		// cycles through the list of stage and adds stageid for each stage to the integer array
+		// cycles through the list of stage and adds stageid for each stage to the int[]
 		for (int i = 0; i < size; i++) {
 			CyclingStage stage = listOfStages.get(i);
 			int stageId = stage.getStageId();
@@ -242,12 +227,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 		// Finds object associated with raceid
 		CyclingRace race = races.get(raceId);
 
-		// Deletes stage from listOfstages and arrayList namesOfStages
-		race.deleteStage(stageId);
+		// Deletes stage from ArrayList<CyclingStage> listOfstages and ArrayList<String> namesOfStages in the race class
+		race.deleteStageObject(stageId);
+		race.deleteStageName(stageId);
 		
 		// Removes the stage from stage hashmap
 		stages.remove(stageId);
 	}
+
+	public int generateUniqueCheckpointId() {
+        // Creates unique checkpoint ID
+        return  checkpointCounter += 1;
+    }
 
 	@Override
 	public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
@@ -284,7 +275,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 		CatergorizedClimbCheckpoint newClimb = new CatergorizedClimbCheckpoint(location, type, averageGradient, length);
 
 		// Adds the checkpoint to the stage and gives it a unique ID
-		int checkpointId = stage.addCheckpoint(newClimb);
+		int checkpointId = generateUniqueCheckpointId();
+
+		stage.addCheckpoint(checkpointId, newClimb);
 
 		return checkpointId;
 	}
@@ -320,10 +313,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 		Checkpoint newSprintCheckpoint = new Checkpoint(location, CheckpointType.SPRINT);
 
 		// Adds checkpoint to stage and gives it unique ID
-		int checkpointId = stage.addCheckpoint(newSprintCheckpoint);
+		int checkpointId = generateUniqueCheckpointId();
+
+		// Adds checkpoint object to the stage class hashmap
+		stage.addCheckpoint(checkpointId, newSprintCheckpoint);
 
 		return checkpointId;
-
 	}
 
 	@Override
@@ -337,13 +332,18 @@ public class CyclingPortalImpl implements CyclingPortal {
 		if (stage.getStageState() == StageState.WAITING_FOR_RESULTS) {
 			throw new InvalidStageStateException("Cannot modify stage that is waiting for results.");
 		}
+		
+		//Removes the checkpoint from its hashmap in the stage class
 		stage.removeCheckpointFromMap(checkpointId);
 	}
 
 	
 	private CyclingStage findStageByCheckpointId(int checkpointId) { 
+		
+		// Intialise CyclingStage object
 		CyclingStage theStage = null;
 
+		// Iterates through all the stages to find the stage that contains the checkpointId
 		for (CyclingStage stage: stages.values()) {
 			int[] checkpointArray = stage.getCheckpointIds();
 
@@ -360,6 +360,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 				break;
 			}
 		}
+		// Return the stage
 		return theStage;
 	}
 
@@ -422,9 +423,10 @@ public class CyclingPortalImpl implements CyclingPortal {
 			throw new InvalidNameException("Invalid team name: " + name);
 		}
 
+		// Adds name of team to ArrayList<String> nameOfTeams
 		newTeam.addTeamName();
 
-		// Adds to the teams hashmap
+		// Adds to the hashmap in teams class
 		teams.put(teamId, newTeam);
 
 		return teamId;
@@ -457,6 +459,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 				riderIdArray.add(entry.getValue());
 			}
 		}
+		
 		// Also remove all rider objects associated with the team
 		for(CyclingRider rider : riderIdArray) {
 			rider.deleteRiderObject();
@@ -953,6 +956,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		raceCounter = 0;
 		teamCounter = 0;
 		stageCounter = 0;
+		checkpointCounter = 0;
 
 	}
 
@@ -990,6 +994,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 		this.stageCounter = loadedPortal.stageCounter;
 		this.teamCounter = loadedPortal.teamCounter;
 		this.riderCounter = loadedPortal.riderCounter;
+		this.checkpointCounter = loadedPortal.checkpointCounter;
 	}
 
 	@Override
@@ -1004,7 +1009,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 				for (CyclingStage stage : race.getStages()) {
 					int stageId = stage.getStageId();
 					stageElapsedTimes.remove(stageId);
-					race.deleteStage(stageId);
+					race.deleteStageObject(stageId);
+					race.deleteStageName(stageId);
 					for(int riderId : riderResults.keySet()) {
 						CyclingResult result = riderResults.get(riderId);
 						if(result.getStageId() == stageId) {
