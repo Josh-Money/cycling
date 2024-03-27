@@ -9,6 +9,7 @@ public class CyclingRider {
     private int teamId;
     private String name;
     private int yearOfBirth;
+    // Maps riderID to its TeamID
     private Map<Integer, Integer> ridersInTeam = new HashMap<>();
 
     public CyclingRider(int riderId, int teamId, String name, int yearOfBirth) {
@@ -27,18 +28,11 @@ public class CyclingRider {
         return this.teamId;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public int getYearOfBirth() {
-        return this.yearOfBirth;
-    }
-
     public Map<Integer, Integer> getRidersInTeam() {
         return ridersInTeam;
     }
 
+    // Removes riderId from the ridersInTeam hashmap
     public void deleteRiderObject() {
         for (int riderId : ridersInTeam.keySet()) {
             if (riderId == this.riderId) {

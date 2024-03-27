@@ -7,6 +7,7 @@ public class CyclingTeam {
     private int teamId;
     private String name;
     private String description;
+    // Maps teamID to ArrayList of riderIDs
     private Map<Integer, ArrayList<Integer>> riders = new HashMap<>();
     private ArrayList<String> namesOfTeams = new ArrayList<>();
     
@@ -14,22 +15,15 @@ public class CyclingTeam {
         this.teamId = teamId;
         this.name = name;
         this.description = description;
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        riders.put(teamId, arrayList);
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getDescription() {
-        return this.description;
+        ArrayList<Integer> listOfRiders = new ArrayList<>();
+        riders.put(teamId, listOfRiders);
     }
 
     public int getTeamId() {
         return this.teamId;
     }
 
+    // Converts ArrayList to int[] 
     public int[] getRidersInTeam(int teamId) {
         ArrayList<Integer> arrayList = riders.get(teamId);
         int[] intArray = new int[arrayList.size()];
@@ -48,21 +42,24 @@ public class CyclingTeam {
         namesOfTeams.add(name);
     }
 
+    // Deletes team object
     public void deleteObj() {
         riders.remove(this.teamId);
     }
 
+    // Adds rider Id to ListOfRiders which then is added to the riders hashmap
     public void addRider(int riderId) {
-        ArrayList<Integer> arrayList = riders.get(this.teamId);
-        riders.remove(this.teamId);
-        arrayList.add(riderId);
-        riders.put(this.teamId, arrayList);
+        ArrayList<Integer> listOfRiders = riders.get(this.teamId);
+        listOfRiders.add(riderId);
+        riders.put(this.teamId, listOfRiders);
     }
+
+    //Removes rider from the riders hashmap, only if the ListOfRiders is not empty
     public void removeRider(int riderId) {
-        ArrayList<Integer> arrayList = riders.get(this.teamId);
-        if (arrayList != null) {
-            arrayList.remove(Integer.valueOf(riderId));
-            riders.put(this.teamId, arrayList);
+        ArrayList<Integer> listOfRiders = riders.get(this.teamId);
+        if (listOfRiders != null) {
+            listOfRiders.remove(Integer.valueOf(riderId));
+            riders.put(this.teamId, listOfRiders);
         }
     }
 

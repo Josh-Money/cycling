@@ -11,7 +11,7 @@ public class CyclingResult {
     private int riderId;
     private int stageId;
     private LocalTime[] checkpointTimes = new LocalTime[0];
-    // Map to store results for each stage
+    // Map stageID to checkpointTimes
     private Map<Integer, LocalTime[]> stageResults = new HashMap<>();
 
 
@@ -19,6 +19,8 @@ public class CyclingResult {
         this.riderId = riderId;
         this.stageId = stageId;
         stageResults.put(stageId, checkpointTimes);
+        
+        // Adds checkpoints in order that it is recieved
         this.checkpointTimes = new LocalTime[checkpointTimes.length];
         for (int i =0; i < checkpointTimes.length; i++) {
             this.checkpointTimes[i] = checkpointTimes[i];
@@ -29,7 +31,6 @@ public class CyclingResult {
         stageResults.put(stageId, checkpoints);
     }
 
-
     public int getRiderId() {
         return riderId;
     }
@@ -39,6 +40,7 @@ public class CyclingResult {
     }
 
     public LocalTime[] getCheckpointTimes() {
+        // Converts LocalTime[] to Array
         return Arrays.copyOf(checkpointTimes, checkpointTimes.length);
     }
 
@@ -47,8 +49,6 @@ public class CyclingResult {
         // Retrieve the results for this stage
         LocalTime[] checkpointTimes = stageResults.get(stageId);
      
-
-
         // Finds the duration between first and last checkpoint
         Duration duration = Duration.between(checkpointTimes[0], checkpointTimes[checkpointTimes.length - 1]);
 
@@ -57,24 +57,6 @@ public class CyclingResult {
         
         // Return the LocalTime Variable whihc represents the elapsed time of a rider in a stage
         return elapsedTime;      
-    }
-
-    public LocalTime calculateAdjustedElapsedTime(LocalTime[] totalElapsedTime) {
-
-        LocalTime adjustedTime = totalElapsedTime[0];
-
-        for (int i = 0; i < totalElapsedTime.length; i++) {
-
-            Duration timeDifference = Duration.between(totalElapsedTime[i - 1], totalElapsedTime[i]);
-
-            if(timeDifference.getSeconds() < 1) {
-                adjustedTime = adjustedTime.plusSeconds(timeDifference.getSeconds());
-            } else {
-                adjustedTime = totalElapsedTime[i];
-            }
-        }
-
-        return adjustedTime;
     }
 
     public LocalTime[] getStageCheckpointTimes(int stageId){

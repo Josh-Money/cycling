@@ -25,14 +25,15 @@ public class CyclingRace {
         return this.name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
     public List<CyclingStage> getStages() {
         return this.stages;
     }
 
+    public ArrayList<String> getNameOfStages() {
+        return this.namesOfStages;
+    }
+    
+    // Finds total length of race
     public int getLength() {
         for(CyclingStage stage : stages) {
             length +=stage.getLength();
@@ -40,6 +41,7 @@ public class CyclingRace {
         return this.length;
     }
 
+    // Adds stage to both ArrayLists
     public int addStage(CyclingStage stage){
         stages.add(stage);
         namesOfStages.add(stage.getName());
@@ -47,10 +49,7 @@ public class CyclingRace {
         return stage.getStageId();
     }
 
-    public ArrayList<String> getNameOfStages() {
-        return this.namesOfStages;
-    }
-
+    // Deletes stage from stages ArrayList
     public void deleteStageObject(int stageId) {
         Iterator<CyclingStage> iterator = stages.iterator();
         while (iterator.hasNext()) {
@@ -62,7 +61,7 @@ public class CyclingRace {
         }
     }
     
-
+    // Deletes stage from nameOfStages ArrayList
     public void deleteStageName(int stageId) {
         Iterator<String> iterator = namesOfStages.iterator();
         while (iterator.hasNext()) {
@@ -76,8 +75,6 @@ public class CyclingRace {
         }
     }
     
-
-
     @Override
     public String toString() {
         return "CyclingRace{" +
