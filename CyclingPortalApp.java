@@ -46,7 +46,7 @@ public class CyclingPortalApp {
             System.out.println("Intermediate sprint checkpoint added to stage with checkpoint Id: " + intermediateSprintId);
             System.out.println(" ");
 
-            int climbCheckpointId2 = portal.addCategorizedClimbToStage(stageId, 4.0, CheckpointType.C4, 17.5, 1.0);
+            int climbCheckpointId2 = portal.addCategorizedClimbToStage(stageId, 4.0, CheckpointType.C1, 17.5, 1.0);
             System.out.println("Climb checkpoint added to stage with checkpoint Id: " + climbCheckpointId2);
             System.out.println(" ");
 
@@ -62,7 +62,7 @@ public class CyclingPortalApp {
             System.out.println("Intermediate sprint checkpoint added to stage with checkpoint Id: " + intermediateSprintId3);
             System.out.println(" ");
 
-            int climbCheckpointId4 = portal.addCategorizedClimbToStage(stageId2, 4.0, CheckpointType.C4, 17.5, 1.0);
+            int climbCheckpointId4 = portal.addCategorizedClimbToStage(stageId2, 4.0, CheckpointType.C1, 17.5, 1.0);
             System.out.println("Climb checkpoint added to stage with checkpoint Id: " + climbCheckpointId4);
             System.out.println(" ");
 
@@ -142,7 +142,7 @@ public class CyclingPortalApp {
 
             portal.registerRiderResultsInStage(stageId, riderId6, LocalTime.of(0, 30, 0), LocalTime.of(1,23,1), LocalTime.of(2, 43, 2), LocalTime.of(4, 49, 8), LocalTime.of(6, 3, 46), LocalTime.of(7, 10, 0));
 
-            portal.registerRiderResultsInStage(stageId2, riderId, LocalTime.of(0, 30, 0), LocalTime.of(1,1,1), LocalTime.of(1, 20, 2), LocalTime.of(2, 40, 8), LocalTime.of(3, 40, 7), LocalTime.of(4, 40, 0));
+            portal.registerRiderResultsInStage(stageId2, riderId, LocalTime.of(0, 30, 0), LocalTime.of(1,1,1), LocalTime.of(1, 20, 2), LocalTime.of(2, 40, 8), LocalTime.of(3, 40, 7), LocalTime.of(6, 40, 0));
 
             portal.registerRiderResultsInStage(stageId2, riderId2, LocalTime.of(0, 30, 0), LocalTime.of(2,10,1), LocalTime.of(3, 40, 2), LocalTime.of(5, 50, 8), LocalTime.of(7, 20, 30), LocalTime.of(8, 40, 0));
             
@@ -288,7 +288,7 @@ public class CyclingPortalApp {
             System.out.println(" ");
 
             LocalTime[] rankedAdjustedTime = portal.getRankedAdjustedElapsedTimesInStage(stageId);
-            System.out.print("The placement of the riders is sorted by their elapsed time: ");
+            System.out.print("The placement of the riders is sorted by their elapsed time for stage 1: ");
             for (LocalTime time : rankedAdjustedTime) {
                 System.out.print(time + " ");
             }
@@ -296,7 +296,7 @@ public class CyclingPortalApp {
             System.out.println(" ");
 
             LocalTime[] rankedAdjustedTime2 = portal.getRankedAdjustedElapsedTimesInStage(stageId2);
-            System.out.print("The placement of the riders is sorted by their elapsed time: ");
+            System.out.print("The placement of the riders is sorted by their elapsed time for stage 2: ");
             for (LocalTime time : rankedAdjustedTime2) {
                 System.out.print(time + " ");
             }
@@ -304,19 +304,19 @@ public class CyclingPortalApp {
             System.out.println(" ");
 
             int[] riderPointsInStage = portal.getRidersPointsInStage(stageId);
-            System.out.println("The array of riders intermediate sprint and finish line points: " + Arrays.toString(riderPointsInStage));
+            System.out.println("The array of riders intermediate sprint and finish line points for stage 1: " + Arrays.toString(riderPointsInStage));
             System.out.println(" ");
 
             int[] ridersMountainPointsInStage = portal.getRidersMountainPointsInStage(stageId);
-            System.out.println("The array of riders points from mountain summits: " + Arrays.toString(ridersMountainPointsInStage)); 
+            System.out.println("The array of riders points from mountain summits for stage 1: " + Arrays.toString(ridersMountainPointsInStage)); 
             System.out.println(" ");
 
             int[] riderPointsInStage2 = portal.getRidersPointsInStage(stageId2);
-            System.out.println("The array of riders intermediate sprint and finish line points: " + Arrays.toString(riderPointsInStage2));
+            System.out.println("The array of riders intermediate sprint and finish line points for stage 2: " + Arrays.toString(riderPointsInStage2));
             System.out.println(" ");
 
             int[] ridersMountainPointsInStage2 = portal.getRidersMountainPointsInStage(stageId2);
-            System.out.println("The array of riders points from mountain summits: " + Arrays.toString(ridersMountainPointsInStage2)); 
+            System.out.println("The array of riders points from mountain summits for stage 2: " + Arrays.toString(ridersMountainPointsInStage2)); 
             System.out.println(" ");
 
             LocalTime[] getGCTimes = portal.getGeneralClassificationTimesInRace(raceId);

@@ -12,10 +12,6 @@ public class CatergorizedClimbCheckpoint extends Checkpoint {
         this.length = length;
     }
 
-    public CheckpointType getType() {
-        return type;
-    }
-
     public double getAverageGradient() {
         return averageGradient;
     }

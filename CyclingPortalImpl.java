@@ -924,13 +924,9 @@ public class CyclingPortalImpl implements CyclingPortal {
 
 		// ArrayList<Checkpoint> that contains all the mountain checkpoint objects
 		ArrayList<Checkpoint> mountainCheckpointObjects = stage.getMountainCheckpointObjects();
-
-		System.out.println(mountainCheckpointObjects);
 		
 		// ArrayList<Integer> that contains all the mountain checkpoint locations
 		ArrayList<Integer> mountainCheckpointArray = stage.getMountainCheckpoints();
-
-		System.out.println(mountainCheckpointArray);
 
 		// ArrayList where each element is a map of the rider ID and their checkpoint time for each checkpoint
 		ArrayList<Map<Integer, Duration>> mountainCheckpointsWithTimes = stage.calculateMountainCheckpointTimes(mountainCheckpointArray);
